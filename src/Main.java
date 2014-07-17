@@ -120,6 +120,13 @@ public class Main {
 				System.out.println(miniMax.miniMax(temp));
 			}
 			
+			else if (command.equals("first")) {
+				int botColor = 1;
+				miniMax = new SimpleMiniMax(botColor);
+				Board temp = b.getCopy();
+				miniMax.showFirstMoves(temp);
+			}
+			
 			else if(command.equals("quit"))
 				System.exit(0);
 			else if(command.equals("check status")) {

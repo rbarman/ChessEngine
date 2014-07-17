@@ -586,7 +586,6 @@ public class Board {
 	}
 	
 	void makeMove(Piece source, Piece dest) {
-		
 		Piece[][] prevBoardState = new Piece[9][9];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
@@ -613,7 +612,6 @@ public class Board {
 		else {
 			contents[dest.y][dest.x] = source;
 			contents[source.y][source.x] = new Piece('.');
-			mapLocations();
 		}
 		
 		if(inDebugMode == true) {
@@ -622,9 +620,9 @@ public class Board {
 		}
 		
 		if(!isChecked()) { 
-			//System.out.println("king not checked");
 			contents[dest.y][dest.x].hasMoved = true;
 			if(kingCastledFlag == 1) {
+				System.out.println("kingCastledFlag == 1");
 				if(contents[dest.y][dest.x - 1].isRook()) {
 					contents[dest.y][dest.x - 1].hasMoved = true;
 				}
@@ -742,16 +740,17 @@ public class Board {
 		return false;
 	}
 	
+	// returns all legal MovePair (s) for a color. 
 	ArrayList<MovePair> getAvailableMoves(int color) {
-		ArrayList<MovePair> pairz = new ArrayList<MovePair>();
+		ArrayList<MovePair> pairs = new ArrayList<MovePair>();
 		for(Piece source : getPiecesOfColor(color)) {
-			ArrayList<Piece> moves = getAvailableMovesFor(source);
-			for(Piece p : moves)
-				pairz.add(new MovePair(source, p));
+			for(Piece p : getAvailableMovesFor(source))
+				pairs.add(new MovePair(source, p));
 		}
-		return pairz;
+		return pairs;
 	}
 	
+	// returns all pieces (squares) that Source can move to. 
 	ArrayList<Piece> getAvailableMovesFor(Piece source) {
 		ArrayList<Piece> availableMoves = new ArrayList<Piece>();
 		for(int i = 0; i < contents.length;i++){
@@ -775,8 +774,10 @@ public class Board {
 	public Board getCopy() {
 		Board copy = new Board();
 		for(int i = 0; i < this.contents.length; i++)
-			  for(int j=0; j<this.contents[i].length; j++)
-				  copy.contents[i][j]=this.contents[i][j];
+			copy.contents[i] = Arrays.copyOf(this.contents[i], this.contents[i].length);
+//		for(int i = 0; i < this.contents.length; i++)
+//			  for(int j=0; j<this.contents[i].length; j++)
+//				  copy.contents[i][j]=this.contents[i][j];
 		return copy;	
 	}
 }

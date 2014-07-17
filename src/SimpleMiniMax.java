@@ -2,12 +2,9 @@ import java.util.ArrayList;
 
 // example.
 public class SimpleMiniMax {
-
-//	Board board; // board is the board.
 	int color; // color is the color of the bot.
 	int depthLimit = 1;
 	public SimpleMiniMax( int color) {
-//		this.board = board;
 		this.color = color;
 	}
 	
@@ -55,7 +52,6 @@ public class SimpleMiniMax {
 			oppMaterialValue = oppMaterialValue + p.getValue();
 		
 		int currentBoardValue = botMaterialValue - oppMaterialValue;
-//		int futureBoardValue = getFutureBoardValue(b);
 		int futureBoardValue = 0;
 		return currentBoardValue + futureBoardValue;
 	}
@@ -70,7 +66,24 @@ public class SimpleMiniMax {
 		return (depth == depthLimit);
 	}
 	
-	// nned to have default board for every bot's first step. 
+	// testing purposes. 
+	public void showFirstMoves(Board b) {
+		System.out.println("Showing the first moves!");
+		ArrayList<MovePair> movePairs = b.getAvailableMoves(color);
+		
+		for(MovePair mv : movePairs)
+			mv.printPair("");
+		System.out.println("----");
+		for(MovePair mv : movePairs) {
+			Board temp = b.getCopy();
+			mv.printPair("firstMove");
+			temp.makeMove(mv.source, mv.dest);
+			System.out.println("score " + evaluateBoard(temp) + " -----\n");
+		}
+	}
+	
+	
+	// need to have default board for every bot's first step. 
 	public int miniMax(Board b) {
 		return maxMove(b, 0);
 	}
