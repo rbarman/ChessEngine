@@ -6,7 +6,8 @@ public class Board {
 	Piece[][] contents = new Piece[9][9];
 	int turn = 1;
 	boolean inDebugMode = false;
-
+	
+	
 	// 1 -> white, 2 -> black.
 
 	void printBoardContents() {
@@ -588,6 +589,7 @@ public class Board {
 	}
 	
 	void makeMove(Piece source, Piece dest) {
+		
 		Piece[][] prevBoardState = new Piece[9][9];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
@@ -612,7 +614,10 @@ public class Board {
 			promotePawn(source, dest);
 		}
 		else {
-			contents[dest.y][dest.x] = source;
+			// other general move, not castle or pawn promotion.
+			Piece tempSource = new Piece(source.name);
+			// tempSource magically works. -> had a 'massive' bug without it.... why?
+			contents[dest.y][dest.x] = tempSource;
 			contents[source.y][source.x] = new Piece('.');
 		}
 		
@@ -623,6 +628,7 @@ public class Board {
 		
 		if(!isChecked()) { 
 			contents[dest.y][dest.x].hasMoved = true;
+			
 			if(kingCastledFlag == 1) {
 				System.out.println("kingCastledFlag == 1");
 				if(contents[dest.y][dest.x - 1].isRook()) {
@@ -774,13 +780,12 @@ public class Board {
 	int getVerticalDiff(Piece source, Piece dest) {
 		return dest.y - source.y;
 	}
+	
+	// simply copies content of the board
 	public Board getCopy() {
 		Board copy = new Board();
 		for(int i = 0; i < this.contents.length; i++)
 			copy.contents[i] = Arrays.copyOf(this.contents[i], this.contents[i].length);
-//		for(int i = 0; i < this.contents.length; i++)
-//			  for(int j=0; j<this.contents[i].length; j++)
-//				  copy.contents[i][j]=this.contents[i][j];
 		return copy;	
 	}
 	
