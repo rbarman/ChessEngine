@@ -261,6 +261,8 @@ public class Board {
 //			System.out.println("dest is edge piece");
 			return false;
 		}
+		if(dest.isEdge())
+			return false;
 	
 		// checks if right color piece is played given current turn.
 //		if (source.side != turn) {
@@ -643,6 +645,7 @@ public class Board {
 			mapLocations();
 			printBoardContents();
 		}
+		mapLocations();
 	}		
 
 	// remove piece at given str. (algebraic notation) -> only useful in debug
@@ -780,4 +783,11 @@ public class Board {
 //				  copy.contents[i][j]=this.contents[i][j];
 		return copy;	
 	}
+	
+	void printInfoOnAllPieces(String tag){
+		for(int i = 0; i < this.contents.length; i++) 
+			for(int j = 0; j < this.contents[i].length; j++)
+				this.getPieceAt(i, j).printInfo(tag);
+	}
+	
 }

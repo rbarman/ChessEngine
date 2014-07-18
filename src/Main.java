@@ -104,9 +104,7 @@ public class Main {
 			}
 				
 			else if(command.equals("all")) {
-				for(int i = 0; i < b.contents.length; i++) 
-					for(int j = 0; j < b.contents[i].length; j++)
-						b.getPieceAt(i, j).printInfo("pls");
+				b.printInfoOnAllPieces("pls");
 			}
 			
 			else if(command.equals("material score")) {
@@ -120,12 +118,20 @@ public class Main {
 				System.out.println(miniMax.miniMax(temp));
 			}
 			
-			else if (command.equals("first")) {
+			else if(command.equals("minimax test")) {
+				int botColor = 1;
+				miniMax = new SimpleMiniMax(botColor);
+				Board temp = b.getCopy();
+				System.out.println(miniMax.miniMaxTest(temp));
+			}
+			
+			else if(command.equals("first")) {
 				int botColor = 1;
 				miniMax = new SimpleMiniMax(botColor);
 				Board temp = b.getCopy();
 				miniMax.showFirstMoves(temp);
 			}
+			
 			
 			else if(command.equals("quit"))
 				System.exit(0);
