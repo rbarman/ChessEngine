@@ -10,35 +10,7 @@ public class SimpleMiniMax {
 	
 	// should be recursive
 		// need to create a temp board on iteration and pass it in. 
-	public int getFutureBoardValue(Board b) {
-		int futureBoardValue = 0;
-		
-		// can we attack opponent pieces?
-		for(Piece p : b.getPiecesOfColor(3 - color)) {
-			ArrayList<Piece> ourAttackers = b.isAttackedBy(p, color);
-			// ourAttackers are our Pieces that can attack opponent's Piece , p.
-			if(ourAttackers.size() == 0)
-				continue; // nothing is attacking p. 
-			for(Piece ap : ourAttackers) {
-				b.makeMove(p, ap);
-				
-			}
-		}
-		
-		
-//		for(Piece p : b.getPiecesOfColor(color)) {
-//			ArrayList<Piece> attackers  = b.isAttackedBy(p, 3 - color);
-//			if(attackers.size() == 0)
-//				continue;
-//			// validation is already done. 
-//			for(Piece ap : attackers) {
-//				b.makeMove(p, ap);
-////				return getFutureBoardValue(b);
-//			}
-//		}
-		
-		return futureBoardValue;
-	}
+	public int getFutureBoardValue(Board b) { return 0;}
 	
 	// very simple... only accounts for static piece values
 	// and does not consider if pieces are attacked or not... 
@@ -83,10 +55,40 @@ public class SimpleMiniMax {
 				temp.makeMove(mv.source, mv.dest);
 //				temp.printBoardContents();
 				int eval = miniMax(depth - 1, temp, true);
-				bestMoveVal = Math.max(bestMoveVal, eval);
+				bestMoveVal = Math.min(bestMoveVal, eval);
 			}
 			return bestMoveVal;
 		}
 	}
-		 
+	
+	public int alphabeta(int depth, Board b, int alpha, int beta, boolean maxPlayer) {
+		if(depth == 0)
+			return evaluateBoard(b);
+		if(maxPlayer) {
+			for(MovePair mv : b.getAvailableMoves(color)) {
+				Board temp = b.getCopy();
+				mv.printPair("MAX player : moving");
+				temp.makeMove(mv.source, mv.dest);
+//				temp.printBoardContents();
+				int eval = alphabeta(depth - 1, temp, alpha, beta, false);
+				alpha = Math.max(alpha, eval);
+				if(beta <= alpha) //beta cut off;
+					break;
+			}
+			return alpha;
+		}
+		else {
+			for(MovePair mv : b.getAvailableMoves(3 - color)) {
+				Board temp = b.getCopy();
+				mv.printPair("MIN player : moving");
+				temp.makeMove(mv.source, mv.dest);
+//				temp.printBoardContents();
+				int eval = alphabeta(depth - 1, temp, alpha, beta, true);
+				beta = Math.min(beta, eval);
+				if(beta <= alpha)
+					break; // alpha cut off;
+			}
+			return beta;
+		}
+	}
 }

@@ -117,7 +117,14 @@ public class Main {
 				int botColor = 1;
 				miniMax = new SimpleMiniMax(botColor);
 				Board temp = b.getCopy();
-				System.out.println(miniMax.miniMax(2,temp, true));
+				System.out.println(miniMax.miniMax(8,temp, true));
+			}
+			
+			else if(command.equals("alphabeta")) {
+				int botColor = 1;
+				miniMax = new SimpleMiniMax(botColor);
+				Board temp = b.getCopy();
+				System.out.println(miniMax.alphabeta(8, temp, 0, 0, true));
 			}
 			
 			else if(command.equals("quit"))
