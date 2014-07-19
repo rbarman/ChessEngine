@@ -69,6 +69,7 @@ public class Main {
 				if(b.isValidMove(p1, p2)) {
 					b.makeMove(p1, p2);
 				}
+				b.printBoardContents();
 			}
 			else if(command.contains("valid")) {
 				String p1Coordinate = command.split(" ")[1];
@@ -111,27 +112,13 @@ public class Main {
 				miniMax = new SimpleMiniMax(1);
 				System.out.println("score : " + miniMax.getMaterialScore(b));
 			}
+
 			else if(command.equals("minimax")) {
 				int botColor = 1;
 				miniMax = new SimpleMiniMax(botColor);
 				Board temp = b.getCopy();
-				System.out.println(miniMax.miniMax(temp));
+				System.out.println(miniMax.miniMax(2,temp, true));
 			}
-			
-			else if(command.equals("minimax test")) {
-				int botColor = 1;
-				miniMax = new SimpleMiniMax(botColor);
-				Board temp = b.getCopy();
-				System.out.println(miniMax.miniMaxTest(temp));
-			}
-			
-			else if(command.equals("first")) {
-				int botColor = 1;
-				miniMax = new SimpleMiniMax(botColor);
-				Board temp = b.getCopy();
-				miniMax.showFirstMoves(temp);
-			}
-			
 			
 			else if(command.equals("quit"))
 				System.exit(0);

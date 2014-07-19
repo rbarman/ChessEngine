@@ -3,7 +3,7 @@ import java.util.ArrayList;
 // example.
 public class SimpleMiniMax {
 	int color; // color is the color of the bot.
-	int depthLimit = 2;
+	int depthLimit = 4;
 	public SimpleMiniMax( int color) {
 		this.color = color;
 	}
@@ -59,127 +59,34 @@ public class SimpleMiniMax {
 	// evaluateBoard WILL have other weights to it, futureScore, positionScore, etc.
 	public int evaluateBoard(Board b) {
 		return getMaterialScore(b);
-	}
-	
-	public boolean depthLimitReached(int depth) {
-		return (depth == depthLimit);
-	}
-		
-	// need to have default board for every bot's first step. 	
-	public int miniMax(Board b) {
-		return maxMove(b, 0);
-	}
-	
-	public int miniMaxTest(Board b) {
-		return maxMoveTest(b, 0);
-	}
-	
-	// perspective of bot 
-	public int maxMove(Board b, int depth) { 
-		System.out.println("maxMove with a depth of " + depth);
-		
-		if(depthLimitReached(depth)) {
+	}	
+	public int miniMax(int depth, Board b, boolean maxPlayer) {
+		if(depth == 0)
 			return evaluateBoard(b);
-		}
-		else {
-			int bestMoveVal = 0;
+		if(maxPlayer) {
+			int bestMoveVal = 0;  //  - infinity ?
 			for(MovePair mv : b.getAvailableMoves(color)) {
 				Board temp = b.getCopy();
 				mv.printPair("MAX player : moving");
 				temp.makeMove(mv.source, mv.dest);
-				int eval = minMove(temp, depth + 1);
-				if(eval > bestMoveVal)
-					bestMoveVal = eval;
+//				temp.printBoardContents();
+				int eval = miniMax(depth - 1, temp, false);
+				bestMoveVal = Math.max(bestMoveVal, eval);
 			}
 			return bestMoveVal;
 		}
-	}
-	
-	// perspective of the opponent
-	public int minMove(Board b, int depth) {
-		System.out.println("minMove with a depth of " + depth);
-		if(depthLimitReached(depth))
-			return evaluateBoard(b);
 		else {
-			int bestMoveVal = 0;
+			int bestMoveVal = 0; //  + infinity ? 
 			for(MovePair mv : b.getAvailableMoves(3 - color)) {
 				Board temp = b.getCopy();
 				mv.printPair("MIN player : moving");
 				temp.makeMove(mv.source, mv.dest);
-				int eval = maxMove(temp, depth + 1);
-				if(eval > bestMoveVal)
-					bestMoveVal = eval;
+//				temp.printBoardContents();
+				int eval = miniMax(depth - 1, temp, true);
+				bestMoveVal = Math.max(bestMoveVal, eval);
 			}
-			return bestMoveVal;	
-		}
-	}
-	
-// testing purposes. 
-	 public void showFirstMoves(Board b) {
-		System.out.println("Showing the first moves!");
-		ArrayList<MovePair> movePairs = b.getAvailableMoves(color);
-
- 		for(MovePair mv : movePairs)
- 			mv.printPair("");
- 		System.out.println("----");
- 		for(MovePair mv : movePairs) {
- 			Board temp = b.getCopy();
- 			mv.printPair("firstMove");
- 			temp.makeMove(mv.source, mv.dest);
- 		}
- 	}
-	
-	// for first move only. 
-	public int maxMoveTest(Board b , int depth) {
-		System.out.println("maxMove with a depth of " + depth);
-		if(depthLimitReached(depth)) {
-			System.out.println("is true!");
-			return evaluateBoard(b);
-		}
-		else {
-			int bestMoveVal = 0;
-//			System.out.println("board info before moving");
-//			b.printInfoOnAllPieces("before");
-			
-			ArrayList<MovePair>mv = b.getAvailableMoves(color);
-			Board temp = b.getCopy();
-			MovePair firstMove = mv.get(0);
-			firstMove.printPair("moving");
-			temp.makeMove(firstMove.source, firstMove.dest);
-			
-//			System.out.println("board info after moving");
-//			b.printInfoOnAllPieces("after");
-//			System.out.println("opponent available moves after moving");
-//			for(MovePair mvs : b.getAvailableMoves(3 - color))
-//				mvs.printPair("opp mvs");
-
-			int eval = minMoveTest(temp, depth + 1);
-			if(eval > bestMoveVal)
-				bestMoveVal = eval;
-			
 			return bestMoveVal;
 		}
 	}
-	
-	// for first move only. 
-	public int minMoveTest(Board b , int depth) {
-
-		System.out.println("minMove with a depth of " + depth);
-		if(depthLimitReached(depth))
-			return evaluateBoard(b);
-		else {
-			int bestMoveVal = 0;
-						
-			ArrayList<MovePair>mv = b.getAvailableMoves(3 - color);
-			System.out.println("doing all of min's moves");
-			for(MovePair m : mv) {
-				Board temp = b.getCopy();
-				m.printPair("moving");
-				temp.makeMove(m.source, m.dest);
-			}
-			return bestMoveVal;	
-		}
-	}
-	
-	
+		 
 }

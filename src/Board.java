@@ -622,7 +622,7 @@ public class Board {
 		}
 		
 		if(inDebugMode == true) {
-			printBoardContents();
+//			printBoardContents();
 			return;
 		}
 		
@@ -638,7 +638,7 @@ public class Board {
 					contents[dest.y][dest.x + 1].hasMoved = true;
 				}
 			}
-			printBoardContents();
+//			printBoardContents();
 			turn = 3 - turn;
 		}
 		else { // king is in check, so put contents back to prevBoardState.
@@ -649,7 +649,7 @@ public class Board {
 					  contents[i][j]=prevBoardState[i][j];
 			
 			mapLocations();
-			printBoardContents();
+//			printBoardContents();
 		}
 		mapLocations();
 	}		
