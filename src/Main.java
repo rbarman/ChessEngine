@@ -1,13 +1,17 @@
 import java.util.Scanner;
 public class Main {
 	static Board b;
-	static SimpleMiniMax miniMax;
+	static int botColor;
+	static int depth;
 	
 	public static void main(String[] args) {
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
+		
+		botColor = 1;
+		depth = 4;
 
 		while(true) {
 			if(b.isCheckMated()) 
@@ -109,22 +113,21 @@ public class Main {
 			}
 			
 			else if(command.equals("material score")) {
-				miniMax = new SimpleMiniMax(1);
-				System.out.println("score : " + miniMax.getMaterialScore(b));
+				Bot bot = new Bot(botColor, depth);
+				System.out.println("score : " + bot.getMaterialScore(b));
 			}
 
 			else if(command.equals("minimax")) {
-				int botColor = 1;
-				miniMax = new SimpleMiniMax(botColor);
+				Bot bot = new Bot(botColor, depth);
 				Board temp = b.getCopy();
-				System.out.println(miniMax.miniMax(8,temp, true));
+				System.out.println(bot.miniMax(8,temp, true));
 			}
 			
 			else if(command.equals("alphabeta")) {
 				int botColor = 1;
-				miniMax = new SimpleMiniMax(botColor);
+				Bot bot = new Bot(botColor, depth);
 				Board temp = b.getCopy();
-				System.out.println(miniMax.alphabeta(8, temp, 0, 0, true));
+				System.out.println(bot.alphabeta(8, temp, 0, 0, true));
 			}
 			
 			else if(command.equals("quit"))
