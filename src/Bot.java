@@ -102,7 +102,7 @@ public class Bot {
 		
 		for(MovePair mv : b.getAvailableMoves(color)) {
 //			mv.printPair("Checking");
-			ScoredMovePair test = alphabeta(depth, b, mv, 0, 0, true);
+			ScoredMovePair test = alphabeta(depth, b, mv, 0, 0, true); // wiki says alpha = - inf, beta = + inf
 			System.out.println("score = " + test.score);
 			if(test.score >= best.score) {
 				best.score = test.score;
