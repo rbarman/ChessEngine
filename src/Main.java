@@ -101,7 +101,7 @@ public class Main {
 					p.printInfo("available for " + command.split(" ")[1]);
 			}
 			
-			// possible moves 1
+			// possible 1
 				// gets all possible moves for white. 
 			else if(command.contains("possible")) { 
 				for(MovePair mp : b.getAvailableMoves(Integer.parseInt(command.split(" ")[1])))
@@ -130,6 +130,15 @@ public class Main {
 				System.out.println(bot.alphabeta(8, temp, 0, 0, true));
 			}
 			
+			else if(command.equals("alphabeta test")) {
+				int botColor = 1;
+				Bot bot = new Bot(botColor, depth);
+				Board temp = b.getCopy();
+				ScoredMovePair best = bot.alphabetaMain(temp, 4);
+				best.print("best");
+			}
+			
+			
 			else if(command.equals("quit"))
 				System.exit(0);
 			else if(command.equals("check status")) {
@@ -140,6 +149,7 @@ public class Main {
 			}
 		catch(Exception e) {
 			System.out.printf("%s caused a %s\n",command, e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

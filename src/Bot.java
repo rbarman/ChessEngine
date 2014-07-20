@@ -56,9 +56,11 @@ public class Bot {
 		}
 	}
 	
+	// useful info http://www.cs.ucla.edu/~rosen/161/notes/alphabeta.html
 	public int alphabeta(int depth, Board b, int alpha, int beta, boolean maxPlayer) {
 		if(depth == 0)
 			return evaluateBoard(b);
+		
 		if(maxPlayer) {
 			for(MovePair mv : b.getAvailableMoves(color)) {
 				Board temp = b.getCopy();
@@ -85,4 +87,61 @@ public class Bot {
 		}
 	}
 
+	public ScoredMovePair alphabetaMain(Board b, int depth) {
+		ScoredMovePair best = new ScoredMovePair();
+		best.score = 0;
+		int count = 0;
+		for(MovePair mv : b.getAvailableMoves(color)) {
+			System.out.println("count : " + ++count);
+			ScoredMovePair test = alphabetaNew(depth, b, mv, 0, 0, true);
+			if(test.score >= best.score) {
+				best.score = test.score;
+				best.movePair = test.movePair;
+			}
+		}
+		System.out.println("best score : " + best.score);
+		System.out.println(best);
+		System.out.println(best.movePair);
+		best.movePair.printPair("best move pair");
+		return best;
+	}
+	
+	public ScoredMovePair alphabetaNew(int depth, Board b,MovePair movePair, int alpha, int beta, boolean maxPlayer) {
+		
+		ScoredMovePair best = new ScoredMovePair();
+		best.movePair = movePair;
+		best.movePair.printPair("pair");
+		
+		if(depth == 0) {
+			best.score = evaluateBoard(b);
+			return best;
+		}
+		
+		if(maxPlayer) {
+			for(MovePair mv : b.getAvailableMoves(color)) {
+				Board temp = b.getCopy();
+				mv.printPair("MAX player : moving");
+				temp.makeMove(mv.source, mv.dest);
+				int eval = alphabeta(depth - 1, temp, alpha, beta, false);
+				alpha = Math.max(alpha, eval);
+				if(beta <= alpha) //beta cut off;
+					break;
+			}
+			best.score = alpha;
+			return best;
+		}
+		else {
+			for(MovePair mv : b.getAvailableMoves(3 - color)) {
+				Board temp = b.getCopy();
+				mv.printPair("MIN player : moving");
+				temp.makeMove(mv.source, mv.dest);
+				int eval = alphabeta(depth - 1, temp, alpha, beta, true);
+				beta = Math.min(beta, eval);
+				if(beta <= alpha)
+					break; // alpha cut off;
+			}
+			best.score = beta;
+			return best;
+		}
+	}	
 }

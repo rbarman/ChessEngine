@@ -19,4 +19,10 @@ public class MovePair {
 		this.score = score;
 	}
 	
+	public void copy(MovePair copy) {
+		this.source.x = copy.source.x;
+		this.source.y = copy.source.y;
+		this.dest.x = copy.dest.x;
+		this.dest.y = copy.dest.y;
+	}
 }
