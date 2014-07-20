@@ -4,11 +4,10 @@ import java.util.Arrays;
 public class Board {
 
 	Piece[][] contents = new Piece[9][9];
-	int turn = 1;
+	int turn = 1; 	// 1 -> white, 2 -> black.
 	boolean inDebugMode = false;
+	int moveCount = 0;
 	
-	
-	// 1 -> white, 2 -> black.
 
 	void printBoardContents() {
 		for (int i = 0; i < contents.length; i++) {
@@ -588,6 +587,13 @@ public class Board {
 		mapLocations();
 	}
 	
+	// bot move, no validation process.
+	// Only used on Bot's best MovePair returned from alphabeta or from opening moves. 
+	// Most Likely will be valid move, so not necessary to go through all validation of general makeMove() ?
+	void makeBotMove(Piece source, Piece dest) {
+		moveCount++;
+	}
+	
 	void makeMove(Piece source, Piece dest) {
 		
 		Piece[][] prevBoardState = new Piece[9][9];
@@ -640,6 +646,7 @@ public class Board {
 			}
 //			printBoardContents();
 			turn = 3 - turn;
+			moveCount++;
 		}
 		else { // king is in check, so put contents back to prevBoardState.
 			System.out.println("king checked");
