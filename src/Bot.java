@@ -1,7 +1,7 @@
 
 public class Bot {
 	int color; 
-	int depth; //depth will indicate difficulty of bot. 
+	int depth;  //depth will indicate difficulty of bot. 
 	
 	public Bot(int color, int depth) {
 		this.color = color;
@@ -144,4 +144,8 @@ public class Bot {
 			return best;
 		}
 	}	
+
+	public void move(Board b){
+		
+	}
 }

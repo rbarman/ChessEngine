@@ -3,21 +3,30 @@ public class Main {
 	static Board b;
 	static int botColor;
 	static int depth;
+	static Bot bot;
 	
 	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
+		
+		botColor = scan.nextInt();
+		depth = scan.nextInt();
+		System.out.printf("botColor : %d \t depth : %d", botColor, depth);
+		bot = new Bot(botColor, depth);
+		
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
 		
-		botColor = 1;
-		depth = 4;
-
+		// "move bot" OR "move __ to __"
+		// bot move vs self move
+		
 		while(true) {
 			if(b.isCheckMated()) 
 				return;
 			else
-				parseCommand(new Scanner(System.in).nextLine());
+				parseCommand(scan.nextLine());
 		}
 	}
 	
@@ -113,31 +122,28 @@ public class Main {
 			}
 			
 			else if(command.equals("material score")) {
-				Bot bot = new Bot(botColor, depth);
 				System.out.println("score : " + bot.getMaterialScore(b));
 			}
 
 			else if(command.equals("minimax")) {
-				Bot bot = new Bot(botColor, depth);
 				Board temp = b.getCopy();
 				System.out.println(bot.miniMax(8,temp, true));
 			}
 			
 			else if(command.equals("alphabeta")) {
-				int botColor = 1;
-				Bot bot = new Bot(botColor, depth);
 				Board temp = b.getCopy();
 				System.out.println(bot.alphabeta(8, temp, 0, 0, true));
 			}
 			
 			else if(command.equals("alphabeta test")) {
-				int botColor = 1;
-				Bot bot = new Bot(botColor, depth);
 				Board temp = b.getCopy();
 				ScoredMovePair best = bot.alphabetaMain(temp, 4);
 				best.print("best");
 			}
-			
+			else if(command.equals("move bot")) {
+				Board temp = b.getCopy();
+				bot.move(temp);
+			}
 			
 			else if(command.equals("quit"))
 				System.exit(0);
