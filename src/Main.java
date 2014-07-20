@@ -3,7 +3,6 @@ public class Main {
 	static Board b;
 	static int botColor;
 	static int depth;
-	static Bot bot;
 	
 	public static void main(String[] args) {
 		
@@ -12,7 +11,6 @@ public class Main {
 		botColor = scan.nextInt();
 		depth = scan.nextInt();
 		System.out.printf("botColor : %d \t depth : %d", botColor, depth);
-		bot = new Bot(botColor, depth);
 		
 		b = new Board();
 		b.setDefaultBoard();
@@ -121,28 +119,45 @@ public class Main {
 				b.printInfoOnAllPieces("pls");
 			}
 			
-			else if(command.equals("material score")) {
-				System.out.println("score : " + bot.getMaterialScore(b));
-			}
+//			else if(command.equals("material score")) {
+//				System.out.println("score : " + bot.getMaterialScore(b));
+//			}
 
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
-				System.out.println(bot.miniMax(8,temp, true));
+				int miniMax;
+				if(botColor == 1)
+					miniMax = new WhiteBot(botColor,depth).miniMax(depth,temp, true);
+				else
+					miniMax = new BlackBot(botColor,depth).miniMax(depth,temp, true);
+				System.out.println(miniMax);	
 			}
 			
 			else if(command.equals("alphabeta")) {
 				Board temp = b.getCopy();
-				System.out.println(bot.alphabeta(8, temp, 0, 0, true));
+				int alphabeta = 0;
+				if(botColor == 1)
+					alphabeta = new WhiteBot(botColor, depth).alphabeta(depth, temp, 0, 0, true);
+				else
+					alphabeta = new BlackBot(botColor, depth).alphabeta(depth, temp, 0, 0, true);
+				System.out.println(alphabeta);
 			}
 			
 			else if(command.equals("alphabeta test")) {
 				Board temp = b.getCopy();
-				ScoredMovePair best = bot.alphabetaMain(temp, 4);
+				ScoredMovePair best;
+				if(botColor == 1)
+					best = new WhiteBot(botColor, depth).alphabetaMain(temp, depth);
+				else
+					best = new BlackBot(botColor, depth).alphabetaMain(temp, depth);
 				best.print("best");
 			}
 			else if(command.equals("move bot")) {
 				Board temp = b.getCopy();
-				bot.move(temp);
+				if(botColor == 1)
+					new WhiteBot(botColor, depth).move(temp);
+				else
+					new BlackBot(botColor, depth).move(temp);
 			}
 			
 			else if(command.equals("quit"))

@@ -144,8 +144,4 @@ public class Bot {
 			return best;
 		}
 	}	
-
-	public void move(Board b){
-		
-	}
 }
