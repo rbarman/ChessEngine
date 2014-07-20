@@ -6,14 +6,13 @@ public class BlackBot extends Bot {
 	}
 	
 	public void move(Board b){
-		
+		if(b.moveCount < openingMoveCount + 1)
+			openingMove(b);
+		else
+			alphaBetaMove(b);
 	}
 	
 	public void openingMove(Board b){
-		
-	}
-	
-	public void alphaBetaMove(Board b) { 
 		
 	}
 }

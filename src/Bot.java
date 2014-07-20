@@ -2,6 +2,7 @@
 public class Bot {
 	int color; 
 	int depth;  //depth will indicate difficulty of bot. 
+	int openingMoveCount = 4; // number of moves considered for a game to be in opening game stage. 
 	
 	public Bot(int color, int depth) {
 		this.color = color;
@@ -28,6 +29,11 @@ public class Bot {
 	public int evaluateBoard(Board b) {
 		return getMaterialScore(b);
 	}	
+	
+	public void alphaBetaMove(Board b) { 
+		ScoredMovePair botMove = alphabetaMain(b, depth);
+		b.makeBotMove(botMove.movePair.source, botMove.movePair.dest);
+	}
 	
 	public int miniMax(int depth, Board b, boolean maxPlayer) {
 		if(depth == 0)
