@@ -10,9 +10,16 @@ public class MovePair {
 	}
 	
 	public void printPair(String tag) { 	
-		System.out.printf("%s >>  %s @ (%d,%d) PAIRED with %s @ (%d,%d) \n",
+		System.out.printf("%s  %s @ (%d,%d) PAIRED with %s @ (%d,%d) \n",
 				tag, this.source.name, this.source.x, this.source.y,
 				this.dest.name, this.dest.x,this.dest.y);
+	}
+	
+	public void printPair(String tag, int depth, int maxDepth) {
+		String tab = "";
+		for(int i = 0; i < maxDepth - depth; i++)
+			tab = "\t" + tab;
+		printPair(tab + tag);
 	}
 	
 	public void setScore(int score) {
