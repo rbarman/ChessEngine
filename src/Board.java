@@ -7,6 +7,7 @@ public class Board {
 	int turn = 1; 	// 1 -> white, 2 -> black.
 	boolean inDebugMode = false;
 	int moveCount = 0;
+	Piece lastMove; // hackish way to get opening lines for Bot. 
 	
 
 	void printBoardContents() {
@@ -578,7 +579,7 @@ public class Board {
 	}
 	
 	void promotePawn(Piece pawn, Piece dest) {
-		System.out.println("in promotePawn");
+//		System.out.println("in promotePawn");
 		if(pawn.side == 1) 
 			contents[dest.y][dest.x] = new Piece('Q');
 		else if(pawn.side == 2) 
@@ -592,6 +593,8 @@ public class Board {
 	// Most Likely will be valid move, so not necessary to go through all validation of general makeMove() ?
 	void makeBotMove(Piece source, Piece dest) {
 		moveCount++;
+		
+		printBoardContents();
 	}
 	
 	void makeMove(Piece source, Piece dest) {
@@ -701,7 +704,7 @@ public class Board {
 			if(horizontalDiff == 2 ) {
 					if(king.side == 1) {
 						Piece p = getPieceAt("h1");
-						p.printInfo("kingCanCastle");
+//						p.printInfo("kingCanCastle");
 						if(p.isRook() && (p.hasMoved == false)){
 							Piece p1 = getPieceAt("f1");
 							Piece p2 = getPieceAt("g1");
@@ -713,7 +716,7 @@ public class Board {
 					}
 					else if(king.side == 2) {
 						Piece p = getPieceAt("h8");
-						p.printInfo("kingCanCastle");
+//						p.printInfo("kingCanCastle");
 						if(p.isRook() && (p.hasMoved == false)){
 							Piece p1 = getPieceAt("f8");
 							Piece p2 = getPieceAt("g8");
@@ -728,7 +731,7 @@ public class Board {
 			else if(horizontalDiff == -2) {
 				if(king.side == 1) {
 					Piece p = getPieceAt("a1");
-					p.printInfo("kingCanCastle");
+//					p.printInfo("kingCanCastle");
 					if(p.isRook() && (p.hasMoved == false)){
 						Piece p1 = getPieceAt("b1");
 						Piece p2 = getPieceAt("c1");
@@ -740,7 +743,7 @@ public class Board {
 				}
 				else if(king.side == 2) {
 					Piece p = getPieceAt("a1");
-					p.printInfo("kingCanCastle");
+//					p.printInfo("kingCanCastle");
 					if(p.isRook() && (p.hasMoved == false)){
 						Piece p1 = getPieceAt("b8");
 						Piece p2 = getPieceAt("c8");
