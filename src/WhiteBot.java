@@ -5,6 +5,16 @@ public class WhiteBot extends Bot
 		super(color, depth);
 	}
 	
-	public void move(Board b){}
+	public void move(Board b){
+		
+	}
+	
+	public void openingMove(Board b){
+		
+	}
+	
+	public void alphaBetaMove(Board b) { 
+		
+	}
 
 }
