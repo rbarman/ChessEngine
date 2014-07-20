@@ -8,9 +8,11 @@ public class Main {
 		
 		Scanner scan = new Scanner(System.in);
 		
+		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
+		System.out.println("Depth: ");
 		depth = scan.nextInt();
-		System.out.printf("botColor : %d \t depth : %d", botColor, depth);
+		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
 		
 		b = new Board();
 		b.setDefaultBoard();
@@ -125,25 +127,15 @@ public class Main {
 
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
-				int miniMax;
+				ScoredMovePair best;
 				if(botColor == 1)
-					miniMax = new WhiteBot(botColor,depth).miniMax(depth,temp, true);
+					best = new WhiteBot(botColor,depth).miniMaxMain(temp, depth);
 				else
-					miniMax = new BlackBot(botColor,depth).miniMax(depth,temp, true);
-				System.out.println(miniMax);	
+					best = new BlackBot(botColor,depth).miniMaxMain(temp, depth);
+				best.print("best");
 			}
 			
 			else if(command.equals("alphabeta")) {
-				Board temp = b.getCopy();
-				int alphabeta = 0;
-				if(botColor == 1)
-					alphabeta = new WhiteBot(botColor, depth).alphabeta(depth, temp, 0, 0, true);
-				else
-					alphabeta = new BlackBot(botColor, depth).alphabeta(depth, temp, 0, 0, true);
-				System.out.println(alphabeta);
-			}
-			
-			else if(command.equals("alphabeta test")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
 				if(botColor == 1)
@@ -152,12 +144,11 @@ public class Main {
 					best = new BlackBot(botColor, depth).alphabetaMain(temp, depth);
 				best.print("best");
 			}
-			else if(command.equals("move bot")) {
-				Board temp = b.getCopy();
+			else if(command.equals("bot go")) {
 				if(botColor == 1)
-					new WhiteBot(botColor, depth).move(temp);
+					new WhiteBot(botColor, depth).move(b);
 				else
-					new BlackBot(botColor, depth).move(temp);
+					new BlackBot(botColor, depth).move(b);
 			}
 			
 			else if(command.equals("quit"))
