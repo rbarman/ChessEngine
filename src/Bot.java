@@ -18,7 +18,7 @@ public class Bot {
 		
 		for(Piece p: b.getPiecesOfColor(this.color))
 			botMaterialValue = botMaterialValue + p.getValue();
-		for(Piece p: b.getPiecesOfColor(3 - this.color))
+		for(Piece p: b.getPiecesOfColor(3 - this.color)) 
 			oppMaterialValue = oppMaterialValue + p.getValue();
 		System.out.printf("\t\tbotMaterial : %d \t oppMaterialValue : %d\n",botMaterialValue, oppMaterialValue);
 		b.printBoardContents();
@@ -111,7 +111,9 @@ public class Bot {
 		
 		for(MovePair mv : availableMovePairs) {
 			mv.printPair("MAX");
-			ScoredMovePair test = alphabeta(depth, b, mv, -1, 1, false); // wiki says alpha = - inf, beta = + inf
+			Board temp = b.getCopy();
+			temp.makeMove(mv.source, mv.dest);
+			ScoredMovePair test = alphabeta(depth, temp, mv, -1, 1, false); // wiki says alpha = - inf, beta = + inf
 			allPairs.add(test);
 			System.out.println("score = " + test.score);
 			if(test.score > best.score) {
@@ -129,17 +131,16 @@ public class Bot {
 		
 		ScoredMovePair best = new ScoredMovePair();
 		best.movePair = movePair;
-		Board temp = b.getCopy();
 		
 		if(depth == 0) {
-			temp.makeMove(movePair.source, movePair.dest);
-			best.score = evaluateBoard(temp);
+			best.score = evaluateBoard(b);
 			return best;
 		}
 		
 		if(maxPlayer) {
 			for(MovePair mv : b.getAvailableMoves(color)) {
 				mv.printPair("MAX ",depth, this.depth);
+				Board temp = b.getCopy();
 				temp.makeMove(mv.source, mv.dest);
 				ScoredMovePair eval = alphabeta(depth -1, temp, mv, alpha, beta, false);
 				alpha = Math.max(alpha, eval.score);
@@ -151,7 +152,10 @@ public class Bot {
 		}
 		else {
 			for(MovePair mv : b.getAvailableMoves(3 - color)) {
+//				for(MovePair m : b.getAvailableMoves(3 - color))
+//					m.printPair("\t opp can move");
 				mv.printPair("MIN ", depth, this.depth);
+				Board temp = b.getCopy();
 				temp.makeMove(mv.source, mv.dest);
 				ScoredMovePair eval = alphabeta(depth -1, temp, mv, alpha, beta, true);
 				beta = Math.min(beta, eval.score);
