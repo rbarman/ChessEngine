@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Bot {
 	int color; 
@@ -15,10 +16,12 @@ public class Bot {
 		int botMaterialValue = 0;
 		int oppMaterialValue = 0;
 		
-		for(Piece p: b.getPiecesOfColor(color))
+		for(Piece p: b.getPiecesOfColor(this.color))
 			botMaterialValue = botMaterialValue + p.getValue();
-		for(Piece p: b.getPiecesOfColor(3 - color))
+		for(Piece p: b.getPiecesOfColor(3 - this.color))
 			oppMaterialValue = oppMaterialValue + p.getValue();
+		System.out.printf("\t\tbotMaterial : %d \t oppMaterialValue : %d\n",botMaterialValue, oppMaterialValue);
+		b.printBoardContents();
 		
 		int currentBoardValue = botMaterialValue - oppMaterialValue;
 		int futureBoardValue = 0;
@@ -27,6 +30,8 @@ public class Bot {
 	
 	// evaluateBoard WILL have other weights to it, futureScore, positionScore, etc.
 	public int evaluateBoard(Board b) {
+//		System.out.println("board sent to evaluateBoard");
+//		b.printBoardContents();
 		return getMaterialScore(b);
 	}	
 	
@@ -40,18 +45,18 @@ public class Bot {
 		
 		ScoredMovePair best = new ScoredMovePair();
 		best.movePair = movePair;
-//		best.movePair.printPair("pair");
+		Board temp = b.getCopy();
 		
 		if(depth == 0) {
-			best.score = evaluateBoard(b);
+			temp.makeMove(movePair.source, movePair.dest);
+			best.score = evaluateBoard(temp);
 			return best;			
 		}
 		
 		if(maxPlayer) {
 			int bestMoveVal = 0;  //  - infinity ?
 			for(MovePair mv : b.getAvailableMoves(color)) {
-				Board temp = b.getCopy();
-//				mv.printPair("MAX player : moving");
+				mv.printPair("MAX ",depth, this.depth);
 				temp.makeMove(mv.source, mv.dest);
 				ScoredMovePair eval = miniMax(depth - 1, temp, mv, false);
 				bestMoveVal = Math.max(bestMoveVal, eval.score);
@@ -61,9 +66,8 @@ public class Bot {
 		else {
 			int bestMoveVal = 0; //  + infinity ? 
 			for(MovePair mv : b.getAvailableMoves(3 - color)) {
-				Board temp = b.getCopy();
-//				mv.printPair("MIN player : moving");
 				temp.makeMove(mv.source, mv.dest);
+				mv.printPair("MIN ",depth, this.depth);
 				ScoredMovePair eval = miniMax(depth - 1, temp, mv, true);
 				bestMoveVal = Math.min(bestMoveVal, eval.score);
 			}
@@ -73,42 +77,50 @@ public class Bot {
 
 	public ScoredMovePair miniMaxMain(Board b, int depth) {
 		ScoredMovePair best = new ScoredMovePair();
-		best.score = 0;
+		best.score = -100;
+		
+		ArrayList<ScoredMovePair> allPairs = new ArrayList<ScoredMovePair>();
+		
 		for(MovePair mv : b.getAvailableMoves(color))
 			mv.printPair("\t poassible move pairs");
 		
 		for(MovePair mv : b.getAvailableMoves(color)) {
-			ScoredMovePair test = miniMax(depth, b , mv,  true);
-			if(test.score >= best.score) {
-				best.score = test.score;
-				best.movePair = test.movePair;
-//				System.out.println("test.score : " + test.score);
-			}
-		}
-//		System.out.println("best score : " + best.score);
-//		best.movePair.printPair("best move pair");
-		return best;
-	}
-	
-	public ScoredMovePair alphabetaMain(Board b, int depth) {
-		ScoredMovePair best = new ScoredMovePair();
-		best.movePair = null;
-		best.score = 0;
-		
-		System.out.println("the board received on alphabetaMai()");
-		b.printBoardContents();
-		for(MovePair mv : b.getAvailableMoves(color))
-			mv.printPair("poassible move pairs");
-		
-		for(MovePair mv : b.getAvailableMoves(color)) {
-//			mv.printPair("Checking");
-			ScoredMovePair test = alphabeta(depth, b, mv, 0, 0, true); // wiki says alpha = - inf, beta = + inf
+			ScoredMovePair test = miniMax(depth, b , mv,  false);
+			allPairs.add(test);
 			System.out.println("score = " + test.score);
 			if(test.score >= best.score) {
 				best.score = test.score;
 				best.movePair = test.movePair;
 			}
 		}
+		for(ScoredMovePair smp : allPairs)
+			smp.print("all");
+		return best;
+	}
+	
+	public ScoredMovePair alphabetaMain(Board b, int depth) {
+		ScoredMovePair best = new ScoredMovePair();
+		best.movePair = null;
+		best.score = -100;
+		
+		ArrayList<ScoredMovePair> allPairs = new ArrayList<ScoredMovePair>();
+		ArrayList<MovePair> availableMovePairs = b.getAvailableMoves(color);
+		
+		for(MovePair mv : availableMovePairs)
+			mv.printPair("possible move pairs");
+		
+		for(MovePair mv : availableMovePairs) {
+			mv.printPair("MAX");
+			ScoredMovePair test = alphabeta(depth, b, mv, -1, 1, false); // wiki says alpha = - inf, beta = + inf
+			allPairs.add(test);
+			System.out.println("score = " + test.score);
+			if(test.score > best.score) {
+				best.score = test.score;
+				best.movePair = test.movePair;
+			}
+		}
+		for(ScoredMovePair smp : allPairs)
+			smp.print("all"); 
 		return best;
 	}
 	
@@ -117,15 +129,16 @@ public class Bot {
 		
 		ScoredMovePair best = new ScoredMovePair();
 		best.movePair = movePair;
+		Board temp = b.getCopy();
 		
 		if(depth == 0) {
-			best.score = evaluateBoard(b);
+			temp.makeMove(movePair.source, movePair.dest);
+			best.score = evaluateBoard(temp);
 			return best;
 		}
 		
 		if(maxPlayer) {
 			for(MovePair mv : b.getAvailableMoves(color)) {
-				Board temp = b.getCopy();
 				mv.printPair("MAX ",depth, this.depth);
 				temp.makeMove(mv.source, mv.dest);
 				ScoredMovePair eval = alphabeta(depth -1, temp, mv, alpha, beta, false);
@@ -138,7 +151,6 @@ public class Bot {
 		}
 		else {
 			for(MovePair mv : b.getAvailableMoves(3 - color)) {
-				Board temp = b.getCopy();
 				mv.printPair("MIN ", depth, this.depth);
 				temp.makeMove(mv.source, mv.dest);
 				ScoredMovePair eval = alphabeta(depth -1, temp, mv, alpha, beta, true);
