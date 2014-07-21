@@ -17,7 +17,7 @@ public class MovePair {
 	
 	public void printPair(String tag, int depth, int maxDepth) {
 		String tab = "";
-		for(int i = 0; i < maxDepth - depth; i++)
+		for(int i = 0; i < maxDepth - depth + 1; i++)
 			tab = "\t" + tab;
 		printPair(tab + tag);
 	}
