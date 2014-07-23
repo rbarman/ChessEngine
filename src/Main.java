@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 public class Main {
 	static Board b;
@@ -150,6 +152,18 @@ public class Main {
 				else
 					new BlackBot(botColor, depth).move(b);
 			}
+			else if(command.contains("set depth")) {
+				depth = Integer.parseInt(command.split(" ")[2]);
+			}
+			
+			else if(command.equals("random")) {
+				ArrayList<MovePair> mvs = b.getAvailableMoves(b.turn);
+				int randInt = new Random().nextInt(mvs.size());
+				MovePair randomMove = mvs.get(randInt);
+				b.makeMove(randomMove.source, randomMove.dest);
+				b.printBoardContents();
+			}
+			
 			
 			else if(command.equals("quit"))
 				System.exit(0);
