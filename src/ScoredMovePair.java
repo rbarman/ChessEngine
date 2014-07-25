@@ -1,4 +1,10 @@
 
+/**
+ * @author Rohan
+ * ScoredMovePair is MovePair with a score attached to it. 
+ * Primary use for ScoredMovePair is in Bot.minimax or Bot.alphabeta
+ * This Class could be re factored out by adding a score field to MovePair
+ */
 public class ScoredMovePair {
 	public MovePair movePair;
 	public int score;

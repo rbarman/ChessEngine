@@ -1,15 +1,21 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * @author Rohan
+ * Board is the Class that represents the Chess Board that Players will play on. 
+ *  The contents of the Board (squares) is represented as a 2 dimensional Piece array.
+ */
 public class Board {
 
 	Piece[][] contents = new Piece[9][9];
 	int turn = 1; 	// 1 -> white, 2 -> black.
-	boolean inDebugMode = false;
-	int moveCount = 0;
-	Piece lastMove; // hackish way to get opening lines for Bot. 
+	boolean inDebugMode = false; 
+	int moveCount = 0;	// number of plies that have been played. 
 	
-
+	/**
+	 * Prints Board.contents
+	 */
 	void printBoardContents() {
 		for (int i = 0; i < contents.length; i++) {
 			for (int j = 0; j < contents[i].length; j++) {
@@ -20,7 +26,12 @@ public class Board {
 			System.out.println("\n");
 		}
 	}
-
+	
+	/**
+	 * Sets the x and y member fields of all Piece objects currently on the board. 
+	 * Objects in an array are not aware of its relative location, so this method is critical.
+	 * mapLocations() must be called anytime a Piece object is moved. For example, this is called extensively in Board.mapLocations(); 
+	 */
 	void mapLocations() {
 		for (int i = 0; i < contents.length; i++)
 			for (int j = 0; j < contents[i].length; j++) {
@@ -29,6 +40,9 @@ public class Board {
 			}
 	}
 
+	/**
+	 * sets Board.contents to be the standard board at the start of game. 
+	 */
 	void setDefaultBoard() {
 		Piece[][] bs = {
 				{ new Piece(8), new Piece('r'), new Piece('n'), new Piece('b'),
@@ -61,18 +75,31 @@ public class Board {
 		contents = bs;
 	}
 
-	// (0,1) refers to (1,0) of array notation.
+	/**
+	 * @param x
+	 * @param y
+	 * @return Piece at respective location in Board.contents
+	 * (0,1) refers to (1,0) of array notation.
+	 */
 	Piece getPieceAt(int x, int y) {
 		return contents[y][x];
 	}
 
-	// c1
+	/**
+	 * @param str : Algebraic notation of a piece : "c1" , "d8" etc
+	 * @return Piece at that location. 
+	 */
 	Piece getPieceAt(String str) {
 		int y = Integer.parseInt(str.substring(1, 2));
 		int x = str.charAt(0) - 97 + 1;
 		return contents[8 - y][x];
 	}
 
+	/**
+	 * @return Piece that represents the King based on the turn value. 
+	 * If turn is 1 , returns White King.
+	 * Could be refactored to get king based on int color paramter.
+	 */
 	Piece getKing() {
 		char flag;
 		if(turn == 1)
@@ -91,6 +118,10 @@ public class Board {
 		return new Piece('.');
 	}
 	
+	/**
+	 * @param side : 1 = White , 2 = Black
+	 * @return All Pieces of the parameter color that are on Board.contents. 
+	 */
 	ArrayList<Piece>getPiecesOfColor(int side) {
 		
 		ArrayList<Piece>pieces = new ArrayList<Piece>();
@@ -103,7 +134,12 @@ public class Board {
 		return pieces;
 	}
 	
-	// (0,1) refers to (1,0) of array notation.
+	/**
+	 * @param x
+	 * @param y
+	 * @return if square at x,y is actually on Board.contents
+	 * 	(0,1) refers to (1,0) of array notation.
+	 */
 	boolean isValidSquare(int x, int y) {
 		if (y < 0 || y > 7)
 			return false;
@@ -112,6 +148,11 @@ public class Board {
 		return true;
 	}
 	
+	/**
+	 * @param p : Piece to check
+	 * @param oppColor : Opponent's color
+	 * @return True or False if the Piece P is attacked by opponent Pieces
+	 */
 	boolean isAttacked(Piece p, int oppColor) {
 		if(inDebugMode == true)
 			return false;
@@ -123,8 +164,12 @@ public class Board {
 		return false;
 	}
 	
-	// returns an arralyist of pieces that attack p.
-	// if list is empty, there are no attacking pieces to p. 
+	/**
+	 * @param p : Piece to check
+	 * @param oppColor : : Opponent's color
+	 * @return All opponent Pieces that attack Piece p.
+	 * If returned list is empty, there are no Pieces that currently attack P. 
+	 */
 	ArrayList<Piece> isAttackedBy(Piece p, int oppColor) {
 //		if(inDebugMode == true)
 //			return null;
@@ -137,7 +182,11 @@ public class Board {
 		return attackers;
 	}
 	
-	// squares where the king COULD move to. 
+	/**
+	 * @param king : king Piece
+	 * @return list of Pieces where the King COULD move to. 
+	 * The only validation that goes on in here is with Board.isValidSquare()
+	 */
 	ArrayList<Piece> getKingSurroundingPeces(Piece king) {
 		ArrayList<Piece> pieces = new ArrayList<Piece>();
 	
@@ -188,6 +237,11 @@ public class Board {
 		return pieces;
 	}
 	
+	
+	/**
+	 * @return if King Piece based on current Board.turn value is CheckMated. 
+	 * Could be re-factored to to have int color paramamter to not rely on Board.turn value. 
+	 */
 	boolean isCheckMated() {
 		if(!isChecked())
 			return false;
@@ -232,7 +286,10 @@ public class Board {
 		}		
 	}
 	
-	// kind of awkward, since isChecked() is dependent on global turn value.
+	/**
+	 * @return if King Piece based on current Board.turn value is Checked. 
+	 * Could be re-factored to to have int color paramamter to not rely on Board.turn value. 
+	 */
 	boolean isChecked() {
 		Piece king = getKing();
 		int oppColor = 3 - king.side;
@@ -244,6 +301,12 @@ public class Board {
 			return false;
 	}
 	
+	/**
+	 * @param source : Piece we are moving from
+	 * @param dest : Piece we are moving to
+	 * @return if it is valid to move from Source to Dest. 
+	 * Calls respective isValid helpers based on Source.name
+	 */
 	boolean isValidMove(Piece source, Piece dest) {
 		//dest.printInfo("validating to...");
 		
@@ -306,29 +369,28 @@ public class Board {
 		return false;
 	}
 
-	
-	boolean isValidKingMove(Piece source, Piece dest) {
+	boolean isValidKingMove(Piece king, Piece dest) {
 //		System.out.println("validating king move");
 		
-		int horizontalDiff = getHorizontalDiff(source, dest);
-		int verticalDiff = getVerticalDiff(source, dest);
+		int horizontalDiff = getHorizontalDiff(king, dest);
+		int verticalDiff = getVerticalDiff(king, dest);
 		if(Math.abs(horizontalDiff) == 1 && verticalDiff == 0)
 			return true;
 		else if(Math.abs(verticalDiff) == 1 && horizontalDiff == 0)
 			return true;
 		else if(Math.abs(horizontalDiff) == 2 && verticalDiff == 0)
-			return kingCanCastle(source, dest);
+			return kingCanCastle(king, dest);
 //		System.out.printf("invalid king move @ (%d,%d)\n", dest.x,
 //				dest.y);
 		return false;
 	}
 	
-	boolean isValidKnightMove(Piece source, Piece dest) {
+	boolean isValidKnightMove(Piece knight, Piece dest) {
 		
 //		System.out.println("validating knight move");
 		
-		int horizontalDiff = getHorizontalDiff(source, dest);
-		int verticalDiff = getVerticalDiff(source, dest);
+		int horizontalDiff = getHorizontalDiff(knight, dest);
+		int verticalDiff = getVerticalDiff(knight, dest);
 		
 		if(horizontalDiff == 2 && verticalDiff == 1)
 	        return true;
@@ -535,6 +597,11 @@ public class Board {
 		}
 	}
 
+	/**
+	 * @param king : Piece king we want to castle
+	 * @param dest : Piece that King will move to
+	 * King will castle on Board.contents
+	 */
 	void castleKing(Piece king, Piece dest) {
 		System.out.println("in castleKing");
 //		king.printInfo();
@@ -578,6 +645,11 @@ public class Board {
 		mapLocations();
 	}
 	
+	/**
+	 * @param pawn : Piece pawn we want to promote
+	 * @param dest : Piece that Pawn will move to
+	 * pawn will be promoted to Queen on Board.contents
+	 */
 	void promotePawn(Piece pawn, Piece dest) {
 //		System.out.println("in promotePawn");
 		if(pawn.side == 1) 
@@ -588,15 +660,11 @@ public class Board {
 		mapLocations();
 	}
 	
-	// bot move, no validation process.
-	// Only used on Bot's best MovePair returned from alphabeta or from opening moves. 
-	// Most Likely will be valid move, so not necessary to go through all validation of general makeMove() ?
-	void makeBotMove(Piece source, Piece dest) {
-		moveCount++;
-		
-		printBoardContents();
-	}
-	
+	/**
+	 * @param source : Piece that will move
+	 * @param dest : Piece that source will move to 
+	 * Source is moved to Dest on Board.contents as long as player is not put in check
+	 */
 	void makeMove(Piece source, Piece dest) {
 		
 		Piece[][] prevBoardState = new Piece[9][9];
@@ -664,8 +732,11 @@ public class Board {
 		mapLocations();
 	}		
 
-	// remove piece at given str. (algebraic notation) -> only useful in debug
-	// mode.
+	/**
+	 * @param str : Algebraic notation. "c1" "c2" etc
+	 * removes Piece at str from Board.contents
+	 * Should only be called when Board.inDebugMode is true
+	 */
 	void removePiece(String str) {
 		Piece p = getPieceAt(str);
 		contents[p.y][p.x] = new Piece('.');
@@ -673,7 +744,10 @@ public class Board {
 		printBoardContents();
 	}
 	
-	// pawn is source and is just able to promote
+	/**
+	 * @param pawn : Piece that will be checked
+	 * @return if pawn can be promoted
+	 */
 	boolean pawnCanPromote(Piece pawn) {
 //		System.out.println("in canPromotePawn");
 		if(pawn.side == 1 && pawn.y == 1)  {
@@ -688,6 +762,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * @param king : Piece that represents King
+	 * @param dest : Where king wants to castle to
+	 * @return if King can castle towards dest
+	 */
 	boolean kingCanCastle(Piece king, Piece dest) {
 		if(inDebugMode)
 			return true;
@@ -759,7 +838,11 @@ public class Board {
 		return false;
 	}
 	
-	// returns all legal MovePair (s) for a color. 
+	// returns all legal MovePair (s) for a color.
+	/**
+	 * @param color : Color we want to look at
+	 * @return list of MovePairs that are available for player based on color. 
+	 */
 	ArrayList<MovePair> getAvailableMoves(int color) {
 		ArrayList<MovePair> pairs = new ArrayList<MovePair>();
 		for(Piece source : getPiecesOfColor(color)) {
@@ -769,7 +852,10 @@ public class Board {
 		return pairs;
 	}
 	
-	// returns all pieces (squares) that Source can move to. 
+	/**
+	 * @param source : Piece we check
+	 * @return all Piece (squares) that source can legally move to
+	 */
 	ArrayList<Piece> getAvailableMovesFor(Piece source) {
 		ArrayList<Piece> availableMoves = new ArrayList<Piece>();
 		for(int i = 0; i < contents.length;i++){
@@ -791,7 +877,9 @@ public class Board {
 		return dest.y - source.y;
 	}
 	
-	// simply copies content of the board
+	/**
+	 * @return Board with it's contents to be a copy of this.contents
+	 */
 	public Board getCopy() {
 		Board copy = new Board();
 		for(int i = 0; i < this.contents.length; i++)
@@ -799,6 +887,10 @@ public class Board {
 		return copy;	
 	}
 	
+	/**
+	 * @param tag : statement passed to Piece.printInfo()
+	 * Prints information of all pieces on Board.contents
+	 */
 	void printInfoOnAllPieces(String tag){
 		for(int i = 0; i < this.contents.length; i++) 
 			for(int j = 0; j < this.contents[i].length; j++)

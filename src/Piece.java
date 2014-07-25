@@ -1,6 +1,13 @@
 
+/**
+ * @author Rohan
+ * Piece is Class that represents the pieces (rook, pawn, queen ,etc) that players wil play on Board.
+ *
+ */
 public class Piece {
 	char name;
+		// r,b,k,q,p, etc
+		// Uppercase is White and lowercase is Black
 	int side;
 		// 1 = white, 2 = black, 3 = empty
 		// 0 is special for the edges.  
@@ -8,15 +15,30 @@ public class Piece {
 	int y;
 	boolean hasMoved;
 	
+	/**
+	 * @param name
+	 * Pieces that are made with this constructor will be playable on
+	 * Side is possible to be 1,2, or 3
+	 */
 	public Piece(char name) {
 		this.name = name;
 		setSide();
 		this.hasMoved = false;
 	}
+	
+	/**
+	 * @param name
+	 * Edge Piece is made with this constructor
+	 */
 	public Piece(String name){
 		this.name = name.charAt(0);
 		this.side = 0;
 	}
+	
+	/**
+	 * @param name
+	 * Edge Piece is made with this constructor
+	 */
 	public Piece (int name){
 		if(name == 8)
 			this.name = '8';
@@ -37,17 +59,23 @@ public class Piece {
 		this.side = 0;
 	}
 	
+	/**
+	 * sets the side of the Piece based on it's name field
+	 * Called in new Piece (Char name). 
+	 */
 	public void setSide() {
 		if(Character.isUpperCase(this.name))
 			side = 1;
 		else if(Character.isLowerCase(this.name))
 			side = 2;
-		else if(this.name == '.' || this.name == '-') 
+		else if(this.name == '.' || this.name == '-') // no significance for . or - atm
 			side = 3;
 	}
-	
-	// only static values ATM
-		// pawn's value will change based on how far up it is + if stacked or not + if defended ?? 
+	 
+	/**
+	 * @return value of Piece
+	 * only static values ATM
+	 */
 	public int getValue() {
 		if(this.isKing()) return 100;
 		if(this.isQueen()) return 9;
@@ -59,25 +87,42 @@ public class Piece {
 		return 0;
 	}
 	
-	// returns the algebraic notation of a piece -> a1, etc
+	/**
+	 * @return algebraic notation of a Piece. "a1", "c3",  etc
+	 */
 	public String getAlgebraic() {
 		char algebraX = (char) ('a' + this.x - 1);
 		int algebraY = 8 - this.y;
 		return "" + algebraX + algebraY;
 	}
 	
+	/**
+	 * print's Piece's name
+	 */
 	public void print() {
 		System.out.print(this.name);
 	}
 	
+	/**
+	 * @param tag : Debugging statement before complete print statement
+	 * print's Piece's name, x, y, side, and if it has moved
+	 * "TAG >> P @ (1,2) with side : 1 moved : false"
+	 */
 	public void printInfo(String tag) {
 		System.out.printf("%s >> %s @ (%d,%d) with side : %d moved : %b\n",tag,this.name,this.x,this.y,this.side,this.hasMoved);
 	}
 	
+	/**
+	 * @return if Piece's side is 3. 
+	 * Side of 1 represents white and 2 represents black
+	 */
 	boolean isEmpty() {
 		return this.side == 3;
 	}
 	
+	/**
+	 * @return if Piece is on edge
+	 */
 	boolean isEdge(){
 		return this.side == 0;
 	}
