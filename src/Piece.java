@@ -2,7 +2,7 @@
 /**
  * @author Rohan
  * Piece is Class that represents the pieces (rook, pawn, queen ,etc) that players wil play on Board.
- *
+ * 
  */
 public class Piece {
 	char name;
