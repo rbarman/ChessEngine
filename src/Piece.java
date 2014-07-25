@@ -59,6 +59,12 @@ public class Piece {
 		return 0;
 	}
 	
+	// returns the algebraic notation of a piece -> a1, etc
+	public String getAlgebraic() {
+		char algebraX = (char) ('a' + this.x - 1);
+		int algebraY = 8 - this.y;
+		return "" + algebraX + algebraY;
+	}
 	
 	public void print() {
 		System.out.print(this.name);
