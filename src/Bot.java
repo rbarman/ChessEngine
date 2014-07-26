@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Rohan
@@ -21,6 +22,55 @@ public class Bot {
 		this.color = color;
 		this.depth = depth;
 	}
+	 	
+	public int getDefenseScore(Board b) {
+		int defenseScore = 0;
+		for(Piece p : b.getPiecesOfColor(color)) {
+			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
+			ArrayList<Piece> defenders = b.isDefendedBy(p);
+			
+			if(defenders.size() == 0 && attackers.size() == 0) {}
+			else if(defenders.size() == 0) {
+				p.printInfo("\t 0 defenders");
+				defenseScore--;
+			}
+			else if(attackers.size() == 0) {} // enemy is not attacking P
+			else { 
+				p.printInfo("\t checking...");
+				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
+				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
+				
+				for(Piece attacker : attackers) { 
+					attacker.printInfo("\t\t ATTACKER");
+					attackerValues.add(attacker.getValue());
+				}
+				
+				for(Piece defender : defenders) { 
+					defender.printInfo("\t\t DEFENDER");
+					defenderValues.add(defender.getValue());
+				}
+				
+				Collections.sort(defenderValues);
+				Collections.sort(attackerValues);
+				
+				// for loop simulates trading pieces. 
+				for(int i = 0; i < attackerValues.size(); i++) {
+					if(defenderValues.get(i) <= attackerValues.get(i)) {
+						defenderValues.remove(i);
+						attackerValues.remove(i);
+					}
+					// defenderValues.get(i) > attackerValues.get(i)
+					else {
+						defenseScore--;
+						break;
+					}
+				}
+				// if we can get out of the for loop that means that we have neutral defense score
+					// can mean equal trades or unfavorable trades for opponent.		
+			}
+		}
+		return defenseScore;
+	}
 	
 	/**
 	 * @param b
@@ -35,15 +85,8 @@ public class Bot {
 			botMaterialValue = botMaterialValue + p.getValue();
 		for(Piece p: b.getPiecesOfColor(3 - this.color)) 
 			oppMaterialValue = oppMaterialValue + p.getValue();
-//		System.out.printf("\t\tbotMaterial : %d \t oppMaterialValue : %d\n",botMaterialValue, oppMaterialValue);
-//		b.printBoardContents();
 		
-		int currentBoardValue = botMaterialValue - oppMaterialValue;
-		//TODO: create a function to get the futureBoardValue
-			// if there are pieces that can be attacked or defended
-			// recurse until there are no pieces that can be attacked or defended etc
-		int futureBoardValue = 0;
-		return currentBoardValue + futureBoardValue;
+		return botMaterialValue - oppMaterialValue;
 	}
 	
 	/**
@@ -53,7 +96,14 @@ public class Bot {
 	 * evaluateBoard WILL have other weights to it, futureScore, positionScore, etc. 
 	 */
 	public int evaluateBoard(Board b) {
-		return getMaterialScore(b);
+		System.out.println("\t\t evaluating.....");
+		b.printBoardContents();
+		int materialScore = getMaterialScore(b);
+		int defenseScore = getDefenseScore(b);
+//		System.out.printf("\t\t cbv : %d\tdS : %d \t\taS : %d\n",materialScore, defenseScore, attackScore);
+		System.out.printf("\t\t cbv : %d\tdS : %d\n",materialScore, defenseScore);
+
+		return materialScore + defenseScore;
 	}	
 	
 	/**
