@@ -43,12 +43,12 @@ public class Bot {
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
 
 				for (Piece attacker : attackers) {
-					attacker.printInfo("\t\t ATTACKER");
+//					attacker.printInfo("\t\t ATTACKER");
 					attackerValues.add(attacker.getValue());
 				}
 
 				for (Piece defender : defenders) {
-					defender.printInfo("\t\t DEFENDER");
+//					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
 
@@ -56,18 +56,15 @@ public class Bot {
 				Collections.sort(attackerValues);
 				
 				// for loop simulates trading pieces. 
-				for(int i = 0; i < defenderValues.size(); i++) {
-					if (attackerValues.get(i) <= defenderValues.get(i)) {
-						defenderValues.remove(i);
-						attackerValues.remove(i);
-						
-						if(defenderValues.size() == 0 && attackerValues.size() != 0)
-							attackScore++;
-						if(attackerValues.isEmpty())
-							break;
-					}
-					else 
+				for(int i = 0; i < defenderValues.size(); i++) {					
+					
+					if(attackerValues.size() < i + 1)
 						break;
+					
+					if(defenderValues.get(i) > attackerValues.get(i)){
+						attackScore++;
+						break;
+					}
 				}
 			}
 		}
@@ -93,31 +90,25 @@ public class Bot {
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
 				
 				for(Piece attacker : attackers) { 
-					attacker.printInfo("\t\t ATTACKER");
+//					attacker.printInfo("\t\t ATTACKER");
 					attackerValues.add(attacker.getValue());
 				}
 				
 				for(Piece defender : defenders) { 
-					defender.printInfo("\t\t DEFENDER");
+//					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
 				
-				Collections.sort(defenderValues);
-				Collections.sort(attackerValues);
+				Collections.sort(defenderValues);  
+				Collections.sort(attackerValues); 
 				
 				// for loop simulates trading pieces. 
 				for(int i = 0; i < attackerValues.size(); i++) {
-					if(defenderValues.get(i) <= attackerValues.get(i)) {
-						defenderValues.remove(i);
-						attackerValues.remove(i);
-						
-						if(defenderValues.isEmpty() && attackerValues.size() > 0){
-							defenseScore--;
-							break;
-						}
-					}
-					// defenderValues.get(i) > attackerValues.get(i)
-					else {
+					
+					if(defenderValues.size() < i + 1)
+						break;
+					
+					if(defenderValues.get(i) > attackerValues.get(i)){
 						defenseScore--;
 						break;
 					}
@@ -153,8 +144,6 @@ public class Bot {
 	 * evaluateBoard WILL have other weights to it, futureScore, positionScore, etc. 
 	 */
 	public int evaluateBoard(Board b) {
-		System.out.println("\t\t evaluating.....");
-		b.printBoardContents();
 		int materialScore = getMaterialScore(b);
 		int defenseScore = getDefenseScore(b);
 		int attackScore = getAttackScore(b);
