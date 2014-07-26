@@ -182,6 +182,18 @@ public class Board {
 		return attackers;
 	}
 	
+	ArrayList<Piece> isDefendedBy(Piece p) {
+		ArrayList<Piece>defenders = new ArrayList<Piece>();
+		p.side = 3 - p.side;
+		for(Piece d : getPiecesOfColor(3 - p.side)) {
+			if(isValidMove(d, p))
+				defenders.add(d);
+		}
+		p.side = 3 - p.side;
+		return defenders;
+	}
+	
+	
 	/**
 	 * @param king : king Piece
 	 * @return list of Pieces where the King COULD move to. 

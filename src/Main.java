@@ -163,8 +163,11 @@ public class Main {
 				b.makeMove(randomMove.source, randomMove.dest);
 				b.printBoardContents();
 			}
-			
-			
+			// a1 defended by
+			else if(command.contains("defended by")) {
+				for(Piece defender : b.isDefendedBy(b.getPieceAt(command.split(" ")[0])))
+					defender.printInfo("defending!");
+			}
 			else if(command.equals("quit"))
 				System.exit(0);
 			else if(command.equals("check status")) {
