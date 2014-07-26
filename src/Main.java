@@ -5,10 +5,12 @@ public class Main {
 	static Board b;
 	static int botColor;
 	static int depth;
+	static ArrayList<MovePair> moveList;
 	
 	public static void main(String[] args) {
 		
 		Scanner scan = new Scanner(System.in);
+		moveList = new ArrayList<MovePair>();
 		
 		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
@@ -34,7 +36,6 @@ public class Main {
 	
 	static void parseCommand(String command) {
 		
-		
 		try {	
 			// g2
 			if(command.length() == 2) 
@@ -48,8 +49,7 @@ public class Main {
 				else { 
 					b.turn = Integer.parseInt(command.split(" ")[2]);
 					System.out.println("turn is now " + b.turn);
-				}
-					
+				}	
 			}
 			// debug shit.
 			else if(command.contains("debug")) {
@@ -85,6 +85,7 @@ public class Main {
 					b.makeMove(p1, p2);
 				}
 				b.printBoardContents();
+				moveList.add(new MovePair(p1,p2));
 			}
 			else if(command.contains("valid")) {
 				String p1Coordinate = command.split(" ")[1];
@@ -155,6 +156,9 @@ public class Main {
 			else if(command.contains("set depth")) {
 				depth = Integer.parseInt(command.split(" ")[2]);
 			}
+			else if(command.contains("set color")){
+				botColor = Integer.parseInt(command.split(" ")[2]);
+			}
 			
 			else if(command.equals("random")) {
 				ArrayList<MovePair> mvs = b.getAvailableMoves(b.turn);
@@ -162,6 +166,7 @@ public class Main {
 				MovePair randomMove = mvs.get(randInt);
 				b.makeMove(randomMove.source, randomMove.dest);
 				b.printBoardContents();
+				moveList.add(new MovePair(randomMove.source,randomMove.dest));
 			}
 			// a1 defended by
 			else if(command.contains("defended by")) {
@@ -172,6 +177,10 @@ public class Main {
 				System.exit(0);
 			else if(command.equals("check status")) {
 				b.isChecked();
+			}
+			else if(command.equals("list")){
+				for(MovePair mp : moveList)
+					System.out.printf("%s %s\n", mp.source.getAlgebraic(), mp.dest.getAlgebraic());
 			}
 			else if(command.equals("print board"))
 				b.printBoardContents();
