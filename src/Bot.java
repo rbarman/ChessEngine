@@ -110,6 +110,11 @@ public class Bot {
 					if(defenderValues.get(i) <= attackerValues.get(i)) {
 						defenderValues.remove(i);
 						attackerValues.remove(i);
+						
+						if(defenderValues.isEmpty() && attackerValues.size() > 0){
+							defenseScore--;
+							break;
+						}
 					}
 					// defenderValues.get(i) > attackerValues.get(i)
 					else {
