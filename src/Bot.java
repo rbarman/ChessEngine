@@ -23,7 +23,59 @@ public class Bot {
 		this.depth = depth;
 	}
 	 	
+	public int getAttackScore(Board b) {
+		System.out.println("\tgetAttackScore");
+		int attackScore = 0;
+		for (Piece p : b.getPiecesOfColor(3 - color)) {
+			ArrayList<Piece> attackers = b.isAttackedBy(p, color);
+			ArrayList<Piece> defenders = b.isDefendedBy(p);
+
+			if (defenders.size() == 0 && attackers.size() == 0) {
+			} else if (attackers.size() == 0) {
+			} // we are not attacking P
+			else if (defenders.size() == 0) {
+				p.printInfo("0 defenders, we will eat it");
+				attackScore++;
+			} else {
+				p.printInfo("\tchecking...");
+
+				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
+				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
+
+				for (Piece attacker : attackers) {
+					attacker.printInfo("\t\t ATTACKER");
+					attackerValues.add(attacker.getValue());
+				}
+
+				for (Piece defender : defenders) {
+					defender.printInfo("\t\t DEFENDER");
+					defenderValues.add(defender.getValue());
+				}
+
+				Collections.sort(defenderValues);
+				Collections.sort(attackerValues);
+				
+				// for loop simulates trading pieces. 
+				for(int i = 0; i < defenderValues.size(); i++) {
+					if (attackerValues.get(i) <= defenderValues.get(i)) {
+						defenderValues.remove(i);
+						attackerValues.remove(i);
+						
+						if(defenderValues.size() == 0 && attackerValues.size() != 0)
+							attackScore++;
+						if(attackerValues.isEmpty())
+							break;
+					}
+					else 
+						break;
+				}
+			}
+		}
+		return attackScore;
+	}
+	
 	public int getDefenseScore(Board b) {
+		System.out.println("\tgetDefenseScore");
 		int defenseScore = 0;
 		for(Piece p : b.getPiecesOfColor(color)) {
 			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
@@ -100,10 +152,10 @@ public class Bot {
 		b.printBoardContents();
 		int materialScore = getMaterialScore(b);
 		int defenseScore = getDefenseScore(b);
-//		System.out.printf("\t\t cbv : %d\tdS : %d \t\taS : %d\n",materialScore, defenseScore, attackScore);
-		System.out.printf("\t\t cbv : %d\tdS : %d\n",materialScore, defenseScore);
+		int attackScore = getAttackScore(b);
+		System.out.printf("\t\t cbv : %d\tdS : %d \t\taS : %d\n",materialScore, defenseScore, attackScore);
 
-		return materialScore + defenseScore;
+		return materialScore + defenseScore + attackScore;
 	}	
 	
 	/**
