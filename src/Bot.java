@@ -24,7 +24,7 @@ public class Bot {
 	}
 	 	
 	public int getAttackScore(Board b) {
-		System.out.println("\tgetAttackScore");
+//		System.out.println("\tgetAttackScore");
 		int attackScore = 0;
 		for (Piece p : b.getPiecesOfColor(3 - color)) {
 			ArrayList<Piece> attackers = b.isAttackedBy(p, color);
@@ -34,10 +34,10 @@ public class Bot {
 			} else if (attackers.size() == 0) {
 			} // we are not attacking P
 			else if (defenders.size() == 0) {
-				p.printInfo("0 defenders, we will eat it");
+//				p.printInfo("0 defenders, we will eat it");
 				attackScore++;
 			} else {
-				p.printInfo("\tchecking...");
+//				p.printInfo("\tchecking...");
 
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
@@ -77,44 +77,68 @@ public class Bot {
 		for(Piece p : b.getPiecesOfColor(color)) {
 			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
 			ArrayList<Piece> defenders = b.isDefendedBy(p);
-			
+							
 			if(defenders.size() == 0 && attackers.size() == 0) {}
 			else if(defenders.size() == 0) {
-				p.printInfo("\t 0 defenders");
+//				p.printInfo("\t 0 defenders");
 				defenseScore--;
 			}
-			else if(attackers.size() == 0) {} // enemy is not attacking P
+			else if(attackers.size() == 0) {
+//				System.out.println("attackers.size() == 0");
+			} // enemy is not attacking P
 			else { 
 				p.printInfo("\t checking...");
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
 				
 				for(Piece attacker : attackers) { 
-//					attacker.printInfo("\t\t ATTACKER");
+					attacker.printInfo("\t\t ATTACKER");
 					attackerValues.add(attacker.getValue());
 				}
 				
 				for(Piece defender : defenders) { 
-//					defender.printInfo("\t\t DEFENDER");
+					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
 				
 				Collections.sort(defenderValues);  
-				Collections.sort(attackerValues); 
+				Collections.sort(attackerValues);
 				
-				// for loop simulates trading pieces. 
-				for(int i = 0; i < attackerValues.size(); i++) {
+				while(!attackerValues.isEmpty()) {
 					
-					if(defenderValues.size() < i + 1)
+					if(attackerValues.size() == 1 && defenderValues.size() == 1) {
+						// neutral. 
+						// opponent has one attacking piece and I have one defending piece.
+						// the value of my defender does not matter since opponent has one attack
+						// and would attack first to trade.
+						System.out.println("neutral bro");
 						break;
+					}
 					
-					if(defenderValues.get(i) > attackerValues.get(i)){
+					if(defenderValues.isEmpty()) {
+						System.out.println("opp has extra attackers after we traded away");
+						for(int i = 0; i < attackerValues.size(); i++) {
+							System.out.println("\t oh no");
+							defenseScore--;
+						}
+					}
+					
+					if(defenderValues.get(0) > attackerValues.get(0)){
+						System.out.println("defenderValues.get(0) > attackerValues.get(0)");
 						defenseScore--;
 						break;
 					}
+					defenderValues.remove(0);
+					attackerValues.remove(0);
 				}
-				// if we can get out of the for loop that means that we have neutral defense score
-					// can mean equal trades or unfavorable trades for opponent.		
+				// check when attackerValues is empty if we still have any defenders. 
+				if(attackerValues.isEmpty() && !defenderValues.isEmpty()) {
+					System.out.println("we have extra defenders after opponent has traded away");
+					for(int i = 0; i < defenderValues.size(); i++) {
+						System.out.println("\tyeet");
+						defenseScore++;
+					}
+				}		
 			}
 		}
 		return defenseScore;
@@ -147,9 +171,14 @@ public class Bot {
 		int materialScore = getMaterialScore(b);
 		int defenseScore = getDefenseScore(b);
 		int attackScore = getAttackScore(b);
-		System.out.printf("\t\t cbv : %d\tdS : %d \t\taS : %d\n",materialScore, defenseScore, attackScore);
+		String tab = "";
+		for(int i = 0; i < depth + 2; i++)
+			tab = "\t" + tab;
+		
+		int boardScore = materialScore + defenseScore + attackScore;
+		System.out.printf("%sfinal : %d \tcbv :%d\tdS : %d \taS : %d\n",tab,boardScore,materialScore, defenseScore, attackScore);
 
-		return materialScore + defenseScore + attackScore;
+		return boardScore;
 	}	
 	
 	/**
@@ -182,7 +211,7 @@ public class Bot {
 		// Bot.miniMax is called on all of Bot's available moves
 			// this is equivalent to the second to top level of Game Tree. 
 		for(MovePair mv : b.getAvailableMoves(color)) {
-			mv.printPair("MAX");
+				mv.printPair("MAX");
 			Board temp = b.getCopy();
 			temp.makeMove(mv.source, mv.dest); 
 			ScoredMovePair test = miniMax(depth, temp , mv,  false);
@@ -254,7 +283,6 @@ public class Bot {
 		}
 	}
 
-
 	/**
 	 * @param b
 	 * @param depth
@@ -271,8 +299,8 @@ public class Bot {
 		ArrayList<ScoredMovePair> allPairs = new ArrayList<ScoredMovePair>();
 		ArrayList<MovePair> availableMovePairs = b.getAvailableMoves(color);
 		
-		for(MovePair mv : availableMovePairs)
-			mv.printPair("possible move pairs");
+//		for(MovePair mv : availableMovePairs)
+//			mv.printPair("possible move pairs");
 		
 		// Bot.alphabeta is called on all of Bot's available moves
 			//this is equivalent to the second to top level of Game Tree. 
@@ -280,7 +308,7 @@ public class Bot {
 			mv.printPair("MAX");
 			Board temp = b.getCopy();
 			temp.makeMove(mv.source, mv.dest);
-			ScoredMovePair test = alphabeta(depth, temp, mv, -1, 1, false); //  alpha = - inf ?, beta = + inf ?
+			ScoredMovePair test = alphabeta(depth, temp, mv, -100, 100, false); //  alpha = - inf ?, beta = + inf ?
 			allPairs.add(test);
 			System.out.println("score = " + test.score);
 			// resets best if test has has a better score
