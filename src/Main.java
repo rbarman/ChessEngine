@@ -87,6 +87,7 @@ public class Main {
 				b.printBoardContents();
 				moveList.add(new MovePair(p1,p2));
 			}
+			// valid a1 to a2
 			else if(command.contains("valid")) {
 				String p1Coordinate = command.split(" ")[1];
 				Piece p1 = b.getPieceAt(p1Coordinate);
@@ -122,6 +123,23 @@ public class Main {
 				
 			else if(command.equals("all")) {
 				b.printInfoOnAllPieces("pls");
+			}
+			// pieces 1
+			else if (command.contains("pieces")) {
+				int color = Integer.parseInt(command.split(" ")[1]);
+				for(int i = 0; i < b.contents.length; i++){
+					for(int j = 0; j < b.contents[i].length; j++) {
+						Piece p = b.getPieceAt(i, j);
+						if(p.side == color)
+							p.printInfo("piece");
+					}
+				}
+			}
+			
+			// attacked a1
+			else if(command.contains("attacked")) {
+				Piece p = b.getPieceAt(command.split(" ")[1]);
+				System.out.println(b.isAttacked(p, 3 - p.side));
 			}
 			
 			// material 1
