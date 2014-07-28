@@ -24,93 +24,39 @@ public class Bot {
 	}
 	 	
 	public int getAttackScore(Board b) {
-//		System.out.println("\tgetAttackScore");
-		int attackScore = 0;
-		for (Piece p : b.getPiecesOfColor(3 - color)) {
-			ArrayList<Piece> attackers = b.isAttackedBy(p, color);
-			ArrayList<Piece> defenders = b.isDefendedBy(p);
-
-			if (defenders.size() == 0 && attackers.size() == 0) {
-			} else if (attackers.size() == 0) {
-			} // we are not attacking P
-			else if (defenders.size() == 0) {
-//				p.printInfo("0 defenders, we will eat it");
-				attackScore++;
-			} else {
-//				p.printInfo("\tchecking...");
-
-				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
-				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
-
-				for (Piece attacker : attackers) {
-//					attacker.printInfo("\t\t ATTACKER");
-					attackerValues.add(attacker.getValue());
-				}
-
-				for (Piece defender : defenders) {
-//					defender.printInfo("\t\t DEFENDER");
-					defenderValues.add(defender.getValue());
-				}
-
-				Collections.sort(defenderValues);
-				Collections.sort(attackerValues);
-				
-				while(!defenderValues.isEmpty()) {
-					
-					if(attackerValues.get(0) > defenderValues.get(0)) {
-						// we should not make the trade. 
-						// the lowest attacker has greater value than the lowest defender
-//						System.out.println("attacker has greater value than defender");
-						break;
-					}
-					
-					if(attackerValues.isEmpty()) {
-						// we have no more attackers while opp still has more defenders
-						for(int i = 0; i < defenderValues.size(); i++) 
-							attackScore--;
-					}
-					defenderValues.remove(0);
-					attackerValues.remove(0);
-				}
-				if(defenderValues.isEmpty() && !attackerValues.isEmpty()) {
-					System.out.println("we have extra attackers after opponent has traded away his defenders");
-					for(int i = 0; i < attackerValues.size(); i++) {
-						System.out.println("\tyeet");
-						attackScore++;
-					}
-				}
-			}
-		}
-		return attackScore;
+		
+		// Attack score of us is really the same as positive defense score of opponent ? 
+		return -1 * new Bot(3 - this.color, depth).getDefenseScore(b);
 	}
 	
 	public int getDefenseScore(Board b) {
-		System.out.println("\tgetDefenseScore");
 		int defenseScore = 0;
 		for(Piece p : b.getPiecesOfColor(color)) {
 			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
 			ArrayList<Piece> defenders = b.isDefendedBy(p);
 							
-			if(defenders.size() == 0 && attackers.size() == 0) {}
+			if(defenders.size() == 0 && attackers.size() == 0) {
+				//opp is not attacking P and we are not defending P
+			}
 			else if(defenders.size() == 0) {
-//				p.printInfo("\t 0 defenders");
+				// opp has atleast one attack on P and we are not defending P
 				defenseScore--;
 			}
 			else if(attackers.size() == 0) {
 //				System.out.println("attackers.size() == 0");
 			} // enemy is not attacking P
 			else { 
-				p.printInfo("\t checking...");
+//				p.printInfo("\t checking...");
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
 				
 				for(Piece attacker : attackers) { 
-					attacker.printInfo("\t\t ATTACKER");
+//					attacker.printInfo("\t\t ATTACKER");
 					attackerValues.add(attacker.getValue());
 				}
 				
 				for(Piece defender : defenders) { 
-					defender.printInfo("\t\t DEFENDER");
+//					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
 				
@@ -124,6 +70,7 @@ public class Bot {
 						// opponent has one attacking piece and I have one defending piece.
 						// the value of my defender does not matter since opponent has one attack
 						// and would attack first to trade.
+//						System.out.println("neutral");
 						break;
 					}
 					
@@ -131,6 +78,7 @@ public class Bot {
 						// opp has extra attacks after we have traded away our defenders. 
 						for(int i = 0; i < attackerValues.size(); i++) 
 							defenseScore--;
+						break;
 					}
 					
 					if(defenderValues.get(0) > attackerValues.get(0)){
@@ -225,6 +173,7 @@ public class Bot {
 			allPairs.add(test);
 			System.out.println("score = " + test.score);
 			// resets best if test has has a better score
+			System.out.printf("test.score %d vs best.score %d\n",test.score, best.score);
 			if(test.score >= best.score) {
 				best.score = test.score;
 				best.movePair = test.movePair;
@@ -261,6 +210,7 @@ public class Bot {
 		if(depth == 0) {
 			temp.makeMove(movePair.source, movePair.dest);
 			best.score = evaluateBoard(temp);
+			System.out.println("\t\tdepth == 0, best.score = " + best.score);
 			return best;			
 		}
 		
