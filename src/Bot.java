@@ -55,15 +55,28 @@ public class Bot {
 				Collections.sort(defenderValues);
 				Collections.sort(attackerValues);
 				
-				// for loop simulates trading pieces. 
-				for(int i = 0; i < defenderValues.size(); i++) {					
+				while(!defenderValues.isEmpty()) {
 					
-					if(attackerValues.size() < i + 1)
+					if(attackerValues.get(0) > defenderValues.get(0)) {
+						// we should not make the trade. 
+						// the lowest attacker has greater value than the lowest defender
+//						System.out.println("attacker has greater value than defender");
 						break;
+					}
 					
-					if(defenderValues.get(i) > attackerValues.get(i)){
+					if(attackerValues.isEmpty()) {
+						// we have no more attackers while opp still has more defenders
+						for(int i = 0; i < defenderValues.size(); i++) 
+							attackScore--;
+					}
+					defenderValues.remove(0);
+					attackerValues.remove(0);
+				}
+				if(defenderValues.isEmpty() && !attackerValues.isEmpty()) {
+					System.out.println("we have extra attackers after opponent has traded away his defenders");
+					for(int i = 0; i < attackerValues.size(); i++) {
+						System.out.println("\tyeet");
 						attackScore++;
-						break;
 					}
 				}
 			}
@@ -111,20 +124,17 @@ public class Bot {
 						// opponent has one attacking piece and I have one defending piece.
 						// the value of my defender does not matter since opponent has one attack
 						// and would attack first to trade.
-						System.out.println("neutral bro");
 						break;
 					}
 					
 					if(defenderValues.isEmpty()) {
-						System.out.println("opp has extra attackers after we traded away");
-						for(int i = 0; i < attackerValues.size(); i++) {
-							System.out.println("\t oh no");
+						// opp has extra attacks after we have traded away our defenders. 
+						for(int i = 0; i < attackerValues.size(); i++) 
 							defenseScore--;
-						}
 					}
 					
 					if(defenderValues.get(0) > attackerValues.get(0)){
-						System.out.println("defenderValues.get(0) > attackerValues.get(0)");
+						// value of our lowest defender is greater than value of lowest opp attacker, not good
 						defenseScore--;
 						break;
 					}
@@ -133,11 +143,8 @@ public class Bot {
 				}
 				// check when attackerValues is empty if we still have any defenders. 
 				if(attackerValues.isEmpty() && !defenderValues.isEmpty()) {
-					System.out.println("we have extra defenders after opponent has traded away");
-					for(int i = 0; i < defenderValues.size(); i++) {
-						System.out.println("\tyeet");
+					for(int i = 0; i < defenderValues.size(); i++) 
 						defenseScore++;
-					}
 				}		
 			}
 		}
