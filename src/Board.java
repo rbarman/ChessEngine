@@ -176,7 +176,7 @@ public class Board {
 		ArrayList<Piece>attackers = new ArrayList<Piece>();
 		for(Piece a : getPiecesOfColor(oppColor))
 			if(isValidMove(a, p)) {
-				System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
+//				System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
 				attackers.add(a);
 			}
 		return attackers;

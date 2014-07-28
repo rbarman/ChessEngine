@@ -124,10 +124,31 @@ public class Main {
 				b.printInfoOnAllPieces("pls");
 			}
 			
-//			else if(command.equals("material score")) {
-//				System.out.println("score : " + bot.getMaterialScore(b));
-//			}
-
+			// material 1
+			else if(command.contains("material")) {
+				int ccolor = Integer.parseInt(command.split(" ")[1]);
+				if(ccolor == 1)
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth).getMaterialScore(b));
+				else
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth).getMaterialScore(b));
+			}
+			// attack 1
+			else if(command.contains("attack")) {
+				int ccolor = Integer.parseInt(command.split(" ")[1]);
+				if(ccolor == 1)
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth).getAttackScore(b));
+				else
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth).getAttackScore(b));
+			}
+			// defense 1
+			else if(command.contains("defense")) {
+				int ccolor = Integer.parseInt(command.split(" ")[1]);
+				if(ccolor == 1)
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth).getDefenseScore(b));
+				else
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth).getDefenseScore(b));
+			}
+				
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
