@@ -9,6 +9,12 @@ public class MovePair {
 	Piece source;
 	Piece dest;
 	
+	// e2e4, etc
+	public String simpleName(){
+		return source.getAlgebraic() + "" + "" + dest.getAlgebraic();
+	}
+	
+	
 	/**
 	 * @param source
 	 * @param dest
