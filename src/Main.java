@@ -10,13 +10,11 @@ public class Main {
 	static Bot bot;
 	static int botColor;
 	static int depth;
-//	static ArrayList<MovePair> moveList;
 	static ArrayList<OpeningLine> openingLines;
 
 	public static void main(String[] args) {
 
 		Scanner scan = new Scanner(System.in);
-//		moveList = new ArrayList<MovePair>();
 
 		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
@@ -42,6 +40,9 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Fills openingLines from Openings.txt
+	 */
 	static void fillBook(){
 		openingLines = new ArrayList<>();
 		BufferedReader reader = null;

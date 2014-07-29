@@ -3,20 +3,21 @@ import java.util.Collections;
 
 /**
  * @author Rohan
- * Bot parent Class, WhiteBot and BlackBot are children
- *
+ * Bot parent Class
+ * Currently able to Make a move based on minimax + alphabeta pruning and recognize common main line opening variations. 
  */
+ 
 public class Bot {
 	int color; // color of bot, 1 = white, 2 = black
 	int depth;  // depth is how many plies / moves ahead Bot will think. Higher depth results in higher difficulty 
 	ArrayList<OpeningLine>openingLines;
-	String currentLine = null;
 	boolean inOpening = true;
 
 	/**
 	 * @param color
 	 * @param depth
-	 * Creates Bot based on color and depth
+	 * @param openingLines
+	 * Creates Bot based on color, depth, and openingLines.
 	 */
 	public Bot(int color, int depth, ArrayList<OpeningLine> openingLines) {
 		this.color = color;
@@ -24,6 +25,10 @@ public class Bot {
 		this.openingLines = openingLines;
 	}	
 	
+	/**
+	 * @param b
+	 * Bot makes move on b.
+	 */
 	public void move(Board b){
 		if(inOpening)
 			openingMove(b);
@@ -31,6 +36,10 @@ public class Bot {
 			alphaBetaMove(b);
 	}
 		
+	/**
+	 * @param b
+	 * Bot makes opening move on b.
+	 */
 	public void openingMove(Board b){
 		if(b.moveCount == 0 && color == 1) {
 			// make first white move.
@@ -71,11 +80,25 @@ public class Bot {
 		}
 	}
 	
-	public int getAttackScore(Board b) {
-		// Attack score of us is really the same as positive defense score of opponent ? 
+	/**
+	 * @param b
+	 * @return attack score on b
+	 * Attack Score of Bot would be equal to the opposite of defense score of Bot's opponent. 
+	 */
+	public int getAttackScore(Board b) { 
 		return -1 * new Bot(3 - color, depth, openingLines).getDefenseScore(b);
 	}
 
+	/**
+	 * @param b
+	 * @return defense score on b. 
+	 * Unequal trades based on value will decrement defense score by said piece's value.
+	 * Hanging pieces will decrement defense score by said piece's value.
+	 * Defense score decremented for extra attacker on an attacked square after all trades have occured.
+	 * Neutral for a piece does not decrement defense. 
+	 * Defense score incremented for extra defenders on an attacked square after all trades have occured. 
+	 * 
+	 */
 	public int getDefenseScore(Board b) {
 		int defenseScore = 0;
 		for(Piece p : b.getPiecesOfColor(color)) {
