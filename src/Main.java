@@ -6,26 +6,26 @@ public class Main {
 	static int botColor;
 	static int depth;
 	static ArrayList<MovePair> moveList;
-	
+
 	public static void main(String[] args) {
-		
+
 		Scanner scan = new Scanner(System.in);
 		moveList = new ArrayList<MovePair>();
-		
+
 		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
 		System.out.println("Depth: ");
 		depth = scan.nextInt();
 		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
-		
+
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
-		
+
 		// "move bot" OR "move __ to __"
 		// bot move vs self move
-		
+
 		while(true) {
 			if(b.isCheckMated()) 
 				return;
@@ -33,9 +33,9 @@ public class Main {
 				parseCommand(scan.nextLine());
 		}
 	}
-	
+
 	static void parseCommand(String command) {
-		
+
 		try {	
 			// g2
 			if(command.length() == 2) 
@@ -64,7 +64,7 @@ public class Main {
 				else if(command.split(" ")[1].equals("status"))
 					System.out.println(b.inDebugMode);
 			}
-			
+
 			else if(command.contains("remove")) {
 				if(b.inDebugMode == false) {
 					System.out.println("can only remove when debug mode is true!");
@@ -73,14 +73,14 @@ public class Main {
 					b.removePiece(command.split(" ")[1]);
 				}
 			}
-			
-			// move a1 to a2
+
+			// move a1 a2
 			else if(command.contains("move")) {
 				String p1Coordinate = command.split(" ")[1];
 				Piece p1 = b.getPieceAt(p1Coordinate);
-				String p2Coordinate = command.split(" ")[3];
+				String p2Coordinate = command.split(" ")[2];
 				Piece p2 = b.getPieceAt(p2Coordinate);
-				
+
 				if(b.isValidMove(p1, p2)) {
 					b.makeMove(p1, p2);
 				}
@@ -93,34 +93,34 @@ public class Main {
 				Piece p1 = b.getPieceAt(p1Coordinate);
 				String p2Coordinate = command.split(" ")[3];
 				Piece p2 = b.getPieceAt(p2Coordinate);
-				
+
 				if(b.isValidMove(p1, p2)) 
 					System.out.println("valid move");
 				else
 					System.out.println("invalid move");
 			}
-			
+
 			else if(command.contains("surround")) {
 				Piece king = b.getPieceAt(command.split(" ")[1]);
 				king.printInfo("king");
 				for(Piece p : b.getKingSurroundingPeces(king)) 
 					p.printInfo("");
 			}
-			
+
 			// available a1
 			else if(command.contains("available")) {
 				Piece source = b.getPieceAt(command.split(" ")[1]);
 				for(Piece p : b.getAvailableMovesFor(source))
 					p.printInfo("available for " + command.split(" ")[1]);
 			}
-			
+
 			// possible 1
 				// gets all possible moves for white. 
 			else if(command.contains("possible")) { 
 				for(MovePair mp : b.getAvailableMoves(Integer.parseInt(command.split(" ")[1])))
 					mp.printPair("possible");
 			}
-				
+
 			else if(command.equals("all")) {
 				b.printInfoOnAllPieces("pls");
 			}
@@ -135,13 +135,13 @@ public class Main {
 					}
 				}
 			}
-			
+
 			// attacked a1
 			else if(command.contains("attacked")) {
 				Piece p = b.getPieceAt(command.split(" ")[1]);
 				System.out.println(b.isAttacked(p, 3 - p.side));
 			}
-			
+
 			// material 1
 			else if(command.contains("material")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
@@ -166,17 +166,18 @@ public class Main {
 				else
 					System.out.printf("defense score : %d\n", new Bot(ccolor,depth).getDefenseScore(b));
 			}
-				
+
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
+
 				if(botColor == 1)
 					best = new WhiteBot(botColor,depth).miniMaxMain(temp, depth);
 				else
 					best = new BlackBot(botColor,depth).miniMaxMain(temp, depth);
-				best.print("best");
+				best.print("BEST");
 			}
-			
+
 			else if(command.equals("alphabeta")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
@@ -198,7 +199,7 @@ public class Main {
 			else if(command.contains("set color")){
 				botColor = Integer.parseInt(command.split(" ")[2]);
 			}
-			
+
 			else if(command.equals("random")) {
 				ArrayList<MovePair> mvs = b.getAvailableMoves(b.turn);
 				int randInt = new Random().nextInt(mvs.size());
