@@ -11,7 +11,8 @@ public class Board {
 	Piece[][] contents = new Piece[9][9];
 	int turn = 1; 	// 1 -> white, 2 -> black.
 	boolean inDebugMode = false; 
-	int moveCount = 0;	// number of plies that have been played. 
+	int moveCount = 0;	// number of plies that have been played.
+	ArrayList<MovePair> playedMoveList = new ArrayList<MovePair>();
 	
 	/**
 	 * Prints Board.contents
