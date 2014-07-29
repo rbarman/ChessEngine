@@ -9,24 +9,71 @@ import java.util.Collections;
 public class Bot {
 	int color; // color of bot, 1 = white, 2 = black
 	int depth;  // depth is how many plies / moves ahead Bot will think. Higher depth results in higher difficulty 
-	int openingMoveCount = 4; 
-		// number of moves considered for a game to be past opening game stage.
-		// can be changed or not even used. 
+	ArrayList<OpeningLine>openingLines;
+	String currentLine = null;
+	boolean inOpening = true;
 
 	/**
 	 * @param color
 	 * @param depth
 	 * Creates Bot based on color and depth
 	 */
-	public Bot(int color, int depth) {
+	public Bot(int color, int depth, ArrayList<OpeningLine> openingLines) {
 		this.color = color;
 		this.depth = depth;
+		this.openingLines = openingLines;
+	}	
+	
+	public void move(Board b){
+		if(inOpening)
+			openingMove(b);
+		else
+			alphaBetaMove(b);
 	}
-
+		
+	public void openingMove(Board b){
+		if(b.moveCount == 0 && color == 1) {
+			// make first white move.
+				// later make randomization for e2e4, d2d4, etc
+			MovePair e2e4 = new MovePair(b.getPieceAt("e2"), b.getPieceAt("e4"));
+			b.makeMove(e2e4.source, e2e4.dest);
+			e2e4.printPair("BOT will move");
+		}
+		else if(b.moveCount == 1 && color == 2) {
+			// make first black move. 
+				// later make randomization for all supported openings. 
+			MovePair e7e5 = new MovePair(b.getPieceAt("e7"), b.getPieceAt("e5"));
+			b.makeMove(e7e5.source, e7e5.dest);
+			e7e5.printPair("BOT will move");
+		}
+		else  {
+			// boolean bs is a ugly way to exit inner for loop to get to outer for loop. 
+			for(OpeningLine ol : openingLines) {
+				boolean bs = false;
+				String[] olSplit = ol.line.split(" ");
+								
+				for(int i = 0; i < b.playedMoveList.size(); i++) {
+//					System.out.printf("o1 split vs playedMove : %s vs %s\n", olSplit[i], b.playedMoveList.get(i).simpleName());
+					if(!olSplit[i].equalsIgnoreCase(b.playedMoveList.get(i).simpleName())) 
+						bs = true;
+				}
+				// if we can get past this for loop this means that there are matches with the current o1 and b.playedMoveList.
+				// if o1Split is smaller than b.playedMoveList, then we can not use this opening line. 
+				if(!bs && olSplit.length > b.playedMoveList.size()) {
+					System.out.println("recognized : " + ol.name);
+					System.out.println("will play... " + olSplit[b.playedMoveList.size()]);
+					return;
+				}
+			}
+			System.out.println("No Opening matches found 2!");
+			inOpening = false;
+//			alphaBetaMove(b);
+		}
+	}
+	
 	public int getAttackScore(Board b) {
-
 		// Attack score of us is really the same as positive defense score of opponent ? 
-		return -1 * new Bot(3 - this.color, depth).getDefenseScore(b);
+		return -1 * new Bot(3 - color, depth, openingLines).getDefenseScore(b);
 	}
 
 	public int getDefenseScore(Board b) {
@@ -163,9 +210,8 @@ public class Bot {
 		Board temp = b.getCopy();
 		ScoredMovePair botMove = alphabetaMain(temp, depth);
 		botMove.movePair.printPair("BOT will move" );
-		b.makeMove(botMove.movePair.source, botMove.movePair.dest);
+//		b.makeMove(botMove.movePair.source, botMove.movePair.dest);
 	}
-
 
 	/**
 	 * @param b

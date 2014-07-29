@@ -1,28 +1,36 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 public class Main {
 	static Board b;
+	static Bot bot;
 	static int botColor;
 	static int depth;
-	static ArrayList<MovePair> moveList;
+//	static ArrayList<MovePair> moveList;
+	static ArrayList<OpeningLine> openingLines;
 
 	public static void main(String[] args) {
 
 		Scanner scan = new Scanner(System.in);
-		moveList = new ArrayList<MovePair>();
+//		moveList = new ArrayList<MovePair>();
 
 		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
 		System.out.println("Depth: ");
 		depth = scan.nextInt();
 		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
+		fillBook();
 
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
 
+		bot = new Bot(botColor, depth, openingLines);
 		// "move bot" OR "move __ to __"
 		// bot move vs self move
 
@@ -34,6 +42,25 @@ public class Main {
 		}
 	}
 
+	static void fillBook(){
+		openingLines = new ArrayList<>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("/Users/Rohan/Development/Chess/src/Openings.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				String[] lineSplit = line.split("-");
+            	openingLines.add(new OpeningLine(lineSplit[0].trim(), lineSplit[1].trim()));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	static void parseCommand(String command) {
 
 		try {	
@@ -83,9 +110,9 @@ public class Main {
 
 				if(b.isValidMove(p1, p2)) {
 					b.makeMove(p1, p2);
+					b.playedMoveList.add(new MovePair(p1,p2));
 				}
 				b.printBoardContents();
-				moveList.add(new MovePair(p1,p2));
 			}
 			// valid a1 to a2
 			else if(command.contains("valid")) {
@@ -146,52 +173,42 @@ public class Main {
 			else if(command.contains("material")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines).getMaterialScore(b));
 				else
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines).getMaterialScore(b));
 			}
 			// attack 1
 			else if(command.contains("attack")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines).getAttackScore(b));
 				else
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines).getAttackScore(b));
 			}
 			// defense 1
 			else if(command.contains("defense")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines).getDefenseScore(b));
 				else
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines).getDefenseScore(b));
 			}
 
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
-
-				if(botColor == 1)
-					best = new WhiteBot(botColor,depth).miniMaxMain(temp, depth);
-				else
-					best = new BlackBot(botColor,depth).miniMaxMain(temp, depth);
+				best = bot.miniMaxMain(temp, depth);
 				best.print("BEST");
 			}
 
 			else if(command.equals("alphabeta")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
-				if(botColor == 1)
-					best = new WhiteBot(botColor, depth).alphabetaMain(temp, depth);
-				else
-					best = new BlackBot(botColor, depth).alphabetaMain(temp, depth);
+				best = bot.alphabetaMain(temp, depth);
 				best.print("best");
 			}
 			else if(command.equals("bot go")) {
-				if(botColor == 1)
-					new WhiteBot(botColor, depth).move(b);
-				else
-					new BlackBot(botColor, depth).move(b);
+				bot.move(b);
 			}
 			else if(command.contains("set depth")) {
 				depth = Integer.parseInt(command.split(" ")[2]);
@@ -206,7 +223,7 @@ public class Main {
 				MovePair randomMove = mvs.get(randInt);
 				b.makeMove(randomMove.source, randomMove.dest);
 				b.printBoardContents();
-				moveList.add(new MovePair(randomMove.source,randomMove.dest));
+				b.playedMoveList.add(new MovePair(randomMove.source,randomMove.dest));
 			}
 			// a1 defended by
 			else if(command.contains("defended by")) {
@@ -219,7 +236,7 @@ public class Main {
 				b.isChecked();
 			}
 			else if(command.equals("list")){
-				for(MovePair mp : moveList)
+				for(MovePair mp : b.playedMoveList)
 					System.out.printf("%s %s\n", mp.source.getAlgebraic(), mp.dest.getAlgebraic());
 			}
 			else if(command.equals("print board"))
