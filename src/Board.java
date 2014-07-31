@@ -226,9 +226,7 @@ public class Board {
 	/**
 	 * @param attacker -> must be Bishop, Rook, or Queen.
 	 * @param victim
-	 * @return list of all Pieces that go in the attacker's line of attack. 
-	 * 		this method will be called past validation process, so Attacker and Victim must have different colors
-	 * 		and it must be valid for Attacker to go to Victim's square. 
+	 * @return list of all Pieces that go in the attacker's line of attack, excluding the victim Piece.  
 	 */
 	ArrayList<Piece> getAttackLinePieces(Piece attacker, Piece victim) {
 		ArrayList<Piece> attackLinePieces = new ArrayList<Piece>();
@@ -292,8 +290,10 @@ public class Board {
 			for(int i = startIndex + 1; i < endIndex; i++) 
 				rookAttackLinePieces.add(getPieceAt(i, attacker.y));
 		}
-		else
+		else {
 			System.out.println("unexpected in Board.getRookAttackLine(), invalid rook attackline");
+			return null;
+		}
 		
 		return rookAttackLinePieces;
 	}
@@ -656,78 +656,22 @@ public class Board {
 			return isValidBishopMove(source, dest);
 	}
 	
-	//:TODO optimize isValidRookMove similarly to Board.getRookAttackLine() , with Math.min and Math.max.
 	boolean isValidRookMove(Piece source, Piece dest) {
-//		System.out.println("validating rook move");
-		// rook can only move horizontally.
-
+		
+		// validating rook move
 		int horizontalDiff = getHorizontalDiff(source, dest);
 		int verticalDiff = getVerticalDiff(source, dest);
-//		System.out.printf("horiz : %d\t vert : %d\n", horizontalDiff,
-//				verticalDiff);
-
-		if (horizontalDiff != 0 && verticalDiff == 0) {
-			// rook is moving vertically
-			if (horizontalDiff < 0) {
-				// moving left, x is decreasing.
-//				System.out.println("moving left");
-				for (int i = source.x - 1; i > dest.x; i--) {
-					Piece p = getPieceAt(i, source.y);
-//					p.printInfo();
-					if (!p.isEmpty()) {
-//						System.out.printf("invalid rook move 1 @ (%d,%d)\n",
-//								p.x, p.y);
-						return false;
-					}
-				}
-			} else {
-				// moving right, x is increasing
-//				System.out.println("moving right");
-
-				for (int i = source.x + 1; i < dest.x; i++) {
-					Piece p = getPieceAt(i, source.y);
-//					p.printInfo();
-					if (!p.isEmpty()) {
-//						System.out.printf("invalid rook move 2 @ (%d,%d)\n",
-//								p.x, p.y);
-						return false;
-					}
-				}
+		if(horizontalDiff != 0 && verticalDiff != 0)
+			return false; // horizontal or vertical diff must be 0 for rook to move properly. 
+		
+		ArrayList<Piece> piecesInLine = getRookAttackLine(source, dest);
+		for(Piece p : piecesInLine) {
+			if(!p.isEmpty()) {
+				//p.printInfo("invalid rook move");
+				return false;
 			}
-			return true;
-		} else if (horizontalDiff == 0 && verticalDiff != 0) {
-			// rook is moving horizontally
-			if (verticalDiff < 0) {
-				// moving up, y is decreasing.
-//				System.out.println("moving up");
-				for (int i = source.y - 1; i > dest.y; i--) {
-					Piece p = getPieceAt(source.x, i);
-//					p.printInfo();
-					if (!p.isEmpty()) {
-//						System.out.printf("invalid rook move 3 @ (%d,%d)\n",
-//								p.x, p.y);
-						return false;
-					}
-				}
-			} else {
-				// moving down, y is increasing.
-//				System.out.println("moving down");
-				for (int i = source.y + 1; i < dest.y; i++) {
-					Piece p = getPieceAt(source.x, i);
-//					p.printInfo();
-					if (!p.isEmpty()) {
-//						System.out.printf("invalid rook move 4 @ (%d,%d)\n",
-//								p.x, p.y);
-						return false;
-					}
-				}
-			}
-			return true;
-		} else {
-//			System.out.println("unexpted in validateRookMove with... ");
-//			source.printInfo();
-			return false;
 		}
+		return true;
 	}
 
 	/**
