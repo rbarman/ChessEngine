@@ -275,6 +275,8 @@ public class Board {
 		
 		int horizontalDiff = getHorizontalDiff(attacker, victim);
 		int verticalDiff = getVerticalDiff(attacker, victim);
+		attacker.printInfo("\tattacker");
+		victim.printInfo("\tvictim");
 		
 		if(horizontalDiff == 0) {
 			// rook vertical attack line
@@ -290,11 +292,6 @@ public class Board {
 			for(int i = startIndex + 1; i < endIndex; i++) 
 				rookAttackLinePieces.add(getPieceAt(i, attacker.y));
 		}
-		else {
-			System.out.println("unexpected in Board.getRookAttackLine(), invalid rook attackline");
-			return null;
-		}
-		
 		return rookAttackLinePieces;
 	}
 	ArrayList<Piece> getQueenAttackLinePieces(Piece attacker, Piece victim){
@@ -662,12 +659,12 @@ public class Board {
 		int horizontalDiff = getHorizontalDiff(source, dest);
 		int verticalDiff = getVerticalDiff(source, dest);
 		if(horizontalDiff != 0 && verticalDiff != 0)
-			return false; // horizontal or vertical diff must be 0 for rook to move properly. 
+			return false; // horizontal or vertical diff must be 0 for rook to move properly.  
 		
 		ArrayList<Piece> piecesInLine = getRookAttackLine(source, dest);
 		for(Piece p : piecesInLine) {
 			if(!p.isEmpty()) {
-				//p.printInfo("invalid rook move");
+				p.printInfo("invalid rook move");
 				return false;
 			}
 		}
