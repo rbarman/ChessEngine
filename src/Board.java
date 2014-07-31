@@ -8,7 +8,7 @@ import java.util.Arrays;
  */
 public class Board {
 
-	Piece[][] contents = new Piece[9][9];
+	Piece[][] contents = new Piece[8][8];
 	int turn = 1; 	// 1 -> white, 2 -> black.
 	boolean inDebugMode = false; 
 	int moveCount = 0;	// number of plies that have been played.
@@ -18,7 +18,9 @@ public class Board {
 	 * Prints Board.contents
 	 */
 	void printBoardContents() {
+		int count = 8;
 		for (int i = 0; i < contents.length; i++) {
+			System.out.printf("%d ", count--);
 			for (int j = 0; j < contents[i].length; j++) {
 				System.out.print("|");
 				contents[i][j].print();
@@ -26,6 +28,7 @@ public class Board {
 			}
 			System.out.println("\n");
 		}
+		System.out.println("*  a   b   c   d   e   f   g   h");
 	}
 	
 	/**
@@ -46,33 +49,30 @@ public class Board {
 	 */
 	void setDefaultBoard() {
 		Piece[][] bs = {
-				{ new Piece(8), new Piece('r'), new Piece('n'), new Piece('b'),
+				{ new Piece('r'), new Piece('n'), new Piece('b'),
 						new Piece('q'), new Piece('k'), new Piece('b'),
 						new Piece('n'), new Piece('r') },
-				{ new Piece(7), new Piece('p'), new Piece('p'), new Piece('p'),
+				{ new Piece('p'), new Piece('p'), new Piece('p'),
 						new Piece('p'), new Piece('p'), new Piece('p'),
 						new Piece('p'), new Piece('p') },
-				{ new Piece(6), new Piece('.'), new Piece('-'), new Piece('.'),
+				{ new Piece('.'), new Piece('-'), new Piece('.'),
 						new Piece('-'), new Piece('.'), new Piece('-'),
 						new Piece('.'), new Piece('-') },
-				{ new Piece(5), new Piece('-'), new Piece('.'), new Piece('-'),
+				{ new Piece('-'), new Piece('.'), new Piece('-'),
 						new Piece('.'), new Piece('-'), new Piece('.'),
 						new Piece('-'), new Piece('.') },
-				{ new Piece(4), new Piece('.'), new Piece('-'), new Piece('.'),
+				{ new Piece('.'), new Piece('-'), new Piece('.'),
 						new Piece('-'), new Piece('.'), new Piece('-'),
 						new Piece('.'), new Piece('-') },
-				{ new Piece(3), new Piece('-'), new Piece('.'), new Piece('-'),
+				{  new Piece('-'), new Piece('.'), new Piece('-'),
 						new Piece('.'), new Piece('-'), new Piece('.'),
 						new Piece('-'), new Piece('.') },
-				{ new Piece(2), new Piece('P'), new Piece('P'), new Piece('P'),
+				{ new Piece('P'), new Piece('P'), new Piece('P'),
 						new Piece('P'), new Piece('P'), new Piece('P'),
 						new Piece('P'), new Piece('P') },
-				{ new Piece(1), new Piece('R'), new Piece('N'), new Piece('B'),
+				{ new Piece('R'), new Piece('N'), new Piece('B'),
 						new Piece('Q'), new Piece('K'), new Piece('B'),
-						new Piece('N'), new Piece('R') },
-				{ new Piece("*"), new Piece("a"), new Piece("b"),
-						new Piece("c"), new Piece("d"), new Piece("e"),
-						new Piece("f"), new Piece("g"), new Piece("h") } };
+						new Piece('N'), new Piece('R') }};
 		contents = bs;
 	}
 
@@ -92,7 +92,7 @@ public class Board {
 	 */
 	Piece getPieceAt(String str) {
 		int y = Integer.parseInt(str.substring(1, 2));
-		int x = str.charAt(0) - 97 + 1;
+		int x = str.charAt(0) - 97;
 		return contents[8 - y][x];
 	}
 
@@ -459,8 +459,6 @@ public class Board {
 //			System.out.println("dest is edge piece");
 			return false;
 		}
-		if(dest.isEdge())
-			return false;
 	
 		// checks if right color piece is played given current turn.
 //		if (source.side != turn) {

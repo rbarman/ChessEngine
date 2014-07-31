@@ -10,7 +10,6 @@ public class Piece {
 		// Uppercase is White and lowercase is Black
 	int side;
 		// 1 = white, 2 = black, 3 = empty
-		// 0 is special for the edges.  
 	int x;
 	int y;
 	boolean hasMoved;
@@ -25,40 +24,7 @@ public class Piece {
 		setSide();
 		this.hasMoved = false;
 	}
-	
-	/**
-	 * @param name
-	 * Edge Piece is made with this constructor
-	 */
-	public Piece(String name){
-		this.name = name.charAt(0);
-		this.side = 0;
-	}
-	
-	/**
-	 * @param name
-	 * Edge Piece is made with this constructor
-	 */
-	public Piece (int name){
-		if(name == 8)
-			this.name = '8';
-		if(name == 7)
-			this.name = '7';
-		if(name == 6)
-			this.name = '6';
-		if(name == 5)
-			this.name = '5';
-		if(name == 4)
-			this.name = '4';
-		if(name == 3)
-			this.name = '3';
-		if(name == 2)
-			this.name = '2';
-		if(name == 1)
-			this.name = '1';
-		this.side = 0;
-	}
-	
+		
 	/**
 	 * sets the side of the Piece based on it's name field
 	 * Called in new Piece (Char name). 
@@ -91,7 +57,7 @@ public class Piece {
 	 * @return algebraic notation of a Piece. "a1", "c3",  etc
 	 */
 	public String getAlgebraic() {
-		char algebraX = (char) ('a' + this.x - 1);
+		char algebraX = (char) ('a' + this.x);
 		int algebraY = 8 - this.y;
 		return "" + algebraX + algebraY;
 	}
@@ -119,14 +85,7 @@ public class Piece {
 	boolean isEmpty() {
 		return this.side == 3;
 	}
-	
-	/**
-	 * @return if Piece is on edge
-	 */
-	boolean isEdge(){
-		return this.side == 0;
-	}
-	
+		
 	boolean isKing(){
 		return (this.name == 'K') || (this.name == 'k');
 	}
