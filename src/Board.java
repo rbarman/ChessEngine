@@ -242,32 +242,39 @@ public class Board {
 	}
 	
 	ArrayList<Piece> getBishopAttackLinePieces(Piece attacker, Piece victim){
+		
 		ArrayList<Piece> bishopAttackLinePieces = new ArrayList<Piece>();
 		int horizontalDiff = getHorizontalDiff(attacker, victim);
 		int verticalDiff = getVerticalDiff(attacker, victim);
+		
 		if (horizontalDiff < 0 && verticalDiff < 0) {
 			// left up diagonal.
+			
 			int idx = attacker.y - 1;
 			for (int i = attacker.x - 1; i > victim.x; i--) 
 				bishopAttackLinePieces.add(getPieceAt(i, idx--));
+			
 		} else if (horizontalDiff < 0 && verticalDiff > 0) {
 			// left down diagonal.
+			
 			int idx = attacker.y + 1;
 			for (int i = attacker.x - 1; i > victim.x; i--) 
 				bishopAttackLinePieces.add(getPieceAt(i, idx++));
 
 		} else if (horizontalDiff > 0 && verticalDiff < 0) {
 			// right up diagonal.
+			
 			int idx = attacker.y - 1;
 			for (int i = attacker.x + 1; i < victim.x; i++) 
 				bishopAttackLinePieces.add(getPieceAt(i, idx--));
+			
 		} else if (horizontalDiff > 0 && verticalDiff > 0) {
 			// right down diagonal.
+			
 			int idx = attacker.y + 1;
 			for (int i = attacker.x + 1; i < victim.x; i++) 
 				bishopAttackLinePieces.add(getPieceAt(i, idx++));
 		}
-		
 		return bishopAttackLinePieces;
 	}
 	ArrayList<Piece> getRookAttackLine(Piece attacker, Piece victim){
@@ -275,8 +282,6 @@ public class Board {
 		
 		int horizontalDiff = getHorizontalDiff(attacker, victim);
 		int verticalDiff = getVerticalDiff(attacker, victim);
-		attacker.printInfo("\tattacker");
-		victim.printInfo("\tvictim");
 		
 		if(horizontalDiff == 0) {
 			// rook vertical attack line
@@ -588,65 +593,20 @@ public class Board {
 		int horizontalDiff = getHorizontalDiff(source, dest);
 		int verticalDiff = getVerticalDiff(source, dest);
 		// bishop can only move diagonally.
-		if (Math.abs(horizontalDiff) != Math.abs(verticalDiff)) {
-//			System.out.println("bishop can only move diagonally!");
+		if (Math.abs(horizontalDiff) != Math.abs(verticalDiff)) 
 			return false;
-		}
-
-		if (horizontalDiff < 0 && verticalDiff < 0) {
-			// left up diagonal.
-			int idx = source.y - 1;
-			for (int i = source.x - 1; i > dest.x; i--) {
-				Piece p = getPieceAt(i, idx--);
-				// p.printInfo();
-				if (!p.isEmpty()) {
-//					System.out.printf("invalid bishop move 1 @ (%d,%d)\n", p.x,
-//							p.y);
-					return false;
-				}
-			}
-		} else if (horizontalDiff < 0 && verticalDiff > 0) {
-			// left down diagonal.
-			int idx = source.y + 1;
-			for (int i = source.x - 1; i > dest.x; i--) {
-				Piece p = getPieceAt(i, idx++);
-				// p.printInfo();
-				if (!p.isEmpty()) {
-//					System.out.printf("invalid bishop move 2 @ (%d,%d)\n", p.x,
-//							p.y);
-					return false;
-				}
-			}
-		} else if (horizontalDiff > 0 && verticalDiff < 0) {
-			// right up diagonal.
-			int idx = source.y - 1;
-			for (int i = source.x + 1; i < dest.x; i++) {
-				Piece p = getPieceAt(i, idx--);
-				// p.printInfo();
-				if (!p.isEmpty()) {
-//					System.out.printf("invalid bishop move 3 @ (%d,%d)\n", p.x,
-//							p.y);
-					return false;
-				}
-			}
-		} else if (horizontalDiff > 0 && verticalDiff > 0) {
-			// right down diagonal.
-			int idx = source.y + 1;
-			for (int i = source.x + 1; i < dest.x; i++) {
-				Piece p = getPieceAt(i, idx++);
-				// p.printInfo;
-				if (!p.isEmpty()) {
-//					System.out.printf("invalid bishop move 4 @ (%d,%d)\n", p.x,
-//							p.y);
-					return false;
-				}
+		
+		for(Piece p : getBishopAttackLinePieces(source, dest)) {
+			if(!p.isEmpty()) {
+				p.printInfo("invalid bishop move");
+				return false;
 			}
 		}
 		return true;
 	}
 
 	boolean isValidQueenMove(Piece source, Piece dest) {
-//		System.out.println("validating queen move...");
+
 		if (isValidRookMove(source, dest))
 			return true;
 		else 
@@ -661,8 +621,7 @@ public class Board {
 		if(horizontalDiff != 0 && verticalDiff != 0)
 			return false; // horizontal or vertical diff must be 0 for rook to move properly.  
 		
-		ArrayList<Piece> piecesInLine = getRookAttackLine(source, dest);
-		for(Piece p : piecesInLine) {
+		for(Piece p : getRookAttackLine(source, dest)) {
 			if(!p.isEmpty()) {
 				p.printInfo("invalid rook move");
 				return false;
