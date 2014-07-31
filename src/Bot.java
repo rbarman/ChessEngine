@@ -92,11 +92,11 @@ public class Bot {
 	/**
 	 * @param b
 	 * @return defense score on b. 
-	 * Unequal trades based on value will decrement defense score by said piece's value.
-	 * Hanging pieces will decrement defense score by said piece's value.
-	 * Defense score decremented for extra attacker on an attacked square after all trades have occured.
-	 * Neutral for a piece does not decrement defense. 
-	 * Defense score incremented for extra defenders on an attacked square after all trades have occured. 
+	 * Unequal trades based on value will decrement defense score by the attacked piece's value.
+	 * Hanging pieces will decrement defense score by the hanging piece's value.
+	 * Defense score decremented for extra attacker on an attacked square after all trades have occurred.
+	 * Defense score incremented for extra defenders on an attacked square after all trades have occurred.
+	 * Neutral for a piece does not decrement defense.  
 	 * 
 	 */
 	public int getDefenseScore(Board b) {
@@ -105,22 +105,19 @@ public class Bot {
 			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
 			ArrayList<Piece> defenders = b.isDefendedBy(p);
 
-
 			if(defenders.size() == 0 && attackers.size() == 0) {
 				//opp is not attacking P and we are not defending P
-//				System.out.println("\tdef and att == 0 \t" + defenseScore);
 			}
 			else if(defenders.size() == 0) {
 				// opp has atleast one attack on P and we are not defending P
-//				System.out.println("\tdef == 0 \t" + defenseScore);
 				p.printInfo("has 0 defenders, def -- by " + p.getValue());				
 				defenseScore -= p.getValue();
 			}
 			else if(attackers.size() == 0) {
-//				System.out.println("\tatt == 0 \t" + defenseScore);
+
 			} // enemy is not attacking P
 			else { 
-				System.out.println("in the else block");
+//				System.out.println("in the else block");
 				p.printInfo("\t checking...");
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
 				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
@@ -139,12 +136,12 @@ public class Bot {
 				Collections.sort(attackerValues);
 
 				while(!attackerValues.isEmpty()) {
-
-					if((attackerValues.size() == 1 && defenderValues.size() == 1)) {
+					
+					if(attackerValues.size() == 1) {
 						if(attackerValues.get(0) >= p.getValue()){
 							// neutral. 
-							// opponent has one attacking piece and I have one defending piece.
-							// if the value of attacker and piece attacked is same, 
+							// opponent has one attacking piece and I have atleast one defending piece.
+							// if the value of attacker and piece attacked is same or if attacker value is greater, 
 							// 		the value of my defender does not matter since opponent has one attack
 							// 		and would attack first to trade.
 							// ex) Opp pawn attacking my pawn and my queen is defended pawn,
