@@ -240,6 +240,15 @@ public class Main {
 				for(MovePair mp : b.playedMoveList)
 					System.out.printf("%s %s\n", mp.source.getAlgebraic(), mp.dest.getAlgebraic());
 			}
+			// aline g1 g3 etc
+			// shows all pieces within attacker's attack line. 
+			else if(command.contains("aline")) {
+				Piece attacker = b.getPieceAt(command.split(" ")[1]);
+				Piece victim = b.getPieceAt(command.split(" ")[2]);
+				for(Piece p : b.getAttackLinePieces(attacker, victim))
+					p.printInfo("in attack line!");
+			}
+			
 			else if(command.equals("print board"))
 				b.printBoardContents();
 			}

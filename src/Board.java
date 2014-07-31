@@ -183,6 +183,12 @@ public class Board {
 		return attackers;
 	}
 	
+	
+	boolean isDefended(Piece p){
+		ArrayList<Piece> defenders = isDefendedBy(p);
+		return defenders.size() > 0;
+	}
+	
 	ArrayList<Piece> isDefendedBy(Piece p) {
 		ArrayList<Piece>defenders = new ArrayList<Piece>();
 		p.side = 3 - p.side;
@@ -194,6 +200,119 @@ public class Board {
 		return defenders;
 	}
 	
+	/**
+	 * @param attacker
+	 * @param victim
+	 * @return List of Pieces that can block an attack from attacker.
+	 * 	Blockers must be ...
+	 * 		defended
+	 * 		lesser value than victim. 
+	 * 			lesser value than attacker?
+	 */
+	ArrayList<Piece> getAttackBlockers(Piece attacker, Piece victim) {
+		ArrayList<Piece> blockers = new ArrayList<Piece>();
+		// Attacker must be queen, bishop, or rook because they are only pieces with an actual line of attack
+			// check on pieces that are in Attacker's line of attack.
+		
+		if(!attacker.isBishop() || !attacker.isRook() || !attacker.isQueen())
+			return blockers;
+		ArrayList<Piece> attackLinePieces = getAttackLinePieces(attacker, victim);
+		for(Piece alp : attackLinePieces) 
+			if(isDefended(alp))
+				blockers.add(alp);
+		return blockers;
+	}	
+	
+	/**
+	 * @param attacker -> must be Bishop, Rook, or Queen.
+	 * @param victim
+	 * @return list of all Pieces that go in the attacker's line of attack. 
+	 * 		this method will be called past validation process, so Attacker and Victim must have different colors
+	 * 		and it must be valid for Attacker to go to Victim's square. 
+	 */
+	ArrayList<Piece> getAttackLinePieces(Piece attacker, Piece victim) {
+		ArrayList<Piece> attackLinePieces = new ArrayList<Piece>();
+		if(attacker.isBishop()) 
+			attackLinePieces = getBishopAttackLinePieces(attacker, victim);
+		else if(attacker.isRook())
+			attackLinePieces = getRookAttackLine(attacker, victim);
+		else if(attacker.isQueen())
+			attackLinePieces = getQueenAttackLinePieces(attacker, victim);
+		else
+			System.out.println("unexpected in Board.getAttackLinePieces! -- unexpected Attacker.name");
+		return attackLinePieces;
+	}
+	
+	ArrayList<Piece> getBishopAttackLinePieces(Piece attacker, Piece victim){
+		ArrayList<Piece> bishopAttackLinePieces = new ArrayList<Piece>();
+		int horizontalDiff = getHorizontalDiff(attacker, victim);
+		int verticalDiff = getVerticalDiff(attacker, victim);
+		if (horizontalDiff < 0 && verticalDiff < 0) {
+			// left up diagonal.
+			int idx = attacker.y - 1;
+			for (int i = attacker.x - 1; i > victim.x; i--) 
+				bishopAttackLinePieces.add(getPieceAt(i, idx--));
+		} else if (horizontalDiff < 0 && verticalDiff > 0) {
+			// left down diagonal.
+			int idx = attacker.y + 1;
+			for (int i = attacker.x - 1; i > victim.x; i--) 
+				bishopAttackLinePieces.add(getPieceAt(i, idx++));
+
+		} else if (horizontalDiff > 0 && verticalDiff < 0) {
+			// right up diagonal.
+			int idx = attacker.y - 1;
+			for (int i = attacker.x + 1; i < victim.x; i++) 
+				bishopAttackLinePieces.add(getPieceAt(i, idx--));
+		} else if (horizontalDiff > 0 && verticalDiff > 0) {
+			// right down diagonal.
+			int idx = attacker.y + 1;
+			for (int i = attacker.x + 1; i < victim.x; i++) 
+				bishopAttackLinePieces.add(getPieceAt(i, idx++));
+		}
+		
+		return bishopAttackLinePieces;
+	}
+	ArrayList<Piece> getRookAttackLine(Piece attacker, Piece victim){
+		ArrayList<Piece> rookAttackLinePieces = new ArrayList<Piece>();
+		
+		int horizontalDiff = getHorizontalDiff(attacker, victim);
+		int verticalDiff = getVerticalDiff(attacker, victim);
+		
+		if(horizontalDiff == 0) {
+			// rook vertical attack line
+			int startIndex = Math.min(attacker.y, victim.y);
+			int endIndex = Math.max(attacker.y, victim.y);
+			for(int i = startIndex + 1; i < endIndex; i++) 
+				rookAttackLinePieces.add(getPieceAt(attacker.x,i));
+		}
+		else if(verticalDiff == 0) {
+			// rook has horizontal attack line
+			int startIndex = Math.min(attacker.x, victim.x);
+			int endIndex = Math.max(attacker.x, victim.x);
+			for(int i = startIndex + 1; i < endIndex; i++) 
+				rookAttackLinePieces.add(getPieceAt(i, attacker.y));
+		}
+		else
+			System.out.println("unexpected in Board.getRookAttackLine(), invalid rook attackline");
+		
+		return rookAttackLinePieces;
+	}
+	ArrayList<Piece> getQueenAttackLinePieces(Piece attacker, Piece victim){
+		
+		ArrayList<Piece> queenAttackLinePieces = new ArrayList<Piece>();
+		int horizontalDiff = getHorizontalDiff(attacker, victim);
+		int verticalDiff = getVerticalDiff(attacker, victim);
+		if(horizontalDiff == verticalDiff) 
+			// queen is attacking diagonally , similar to a bishop
+			for(Piece p : getBishopAttackLinePieces(attacker, victim))
+				queenAttackLinePieces.add(p);
+		else
+			// queen is attacking horizontally, similar to a rook.
+			for(Piece p : getRookAttackLine(attacker, victim))
+				queenAttackLinePieces.add(p);
+		
+		return queenAttackLinePieces;
+	}
 	
 	/**
 	 * @param king : king Piece
@@ -537,6 +656,7 @@ public class Board {
 			return isValidBishopMove(source, dest);
 	}
 	
+	//:TODO optimize isValidRookMove similarly to Board.getRookAttackLine() , with Math.min and Math.max.
 	boolean isValidRookMove(Piece source, Piece dest) {
 //		System.out.println("validating rook move");
 		// rook can only move horizontally.
@@ -851,7 +971,6 @@ public class Board {
 		return false;
 	}
 	
-	// returns all legal MovePair (s) for a color.
 	/**
 	 * @param color : Color we want to look at
 	 * @return list of MovePairs that are available for player based on color. 
