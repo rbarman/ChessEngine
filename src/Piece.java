@@ -1,4 +1,3 @@
-
 /**
  * @author Rohan
  * Piece is Class that represents the pieces (rook, pawn, queen ,etc) that players wil play on Board.
@@ -57,6 +56,7 @@ public class Piece {
 	 * @return algebraic notation of a Piece. "a1", "c3",  etc
 	 */
 	public String getAlgebraic() {
+		
 		char algebraX = (char) ('a' + this.x);
 		int algebraY = 8 - this.y;
 		return "" + algebraX + algebraY;
