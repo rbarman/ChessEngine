@@ -150,6 +150,13 @@ public class Bot {
 							break;
 						}
 						if(p.getValue() > attackerValues.get(0)) {
+							
+							//:TODO here use Board.getAttackBlockers();
+							// check if there are any attack blockers
+//							for( Piece block : b.getAttackBlockers(attacker, victim))
+								
+								
+								
 							defenseScore -= p.getValue();
 							System.out.println("\t\tp.getValue > attackerValues.get(0)");
 							System.out.println("\t\tdef -- by " + p.getValue());
