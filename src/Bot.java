@@ -91,7 +91,7 @@ public class Bot {
 
 	/**
 	 * @param b
-	 * @return defense score on b. 
+	 * @return defense score on b for Bot's perspective. 
 	 * Unequal trades based on value will decrement defense score by the attacked piece's value.
 	 * Hanging pieces will decrement defense score by the hanging piece's value.
 	 * Defense score decremented for extra attacker on an attacked square after all trades have occurred.
@@ -102,91 +102,76 @@ public class Bot {
 	public int getDefenseScore(Board b) {
 		int defenseScore = 0;
 		for(Piece p : b.getPiecesOfColor(color)) {
-			ArrayList<Piece> attackers = b.isAttackedBy(p, 3 - color);
-			ArrayList<Piece> defenders = b.isDefendedBy(p);
-
-			if(defenders.size() == 0 && attackers.size() == 0) {
-				//opp is not attacking P and we are not defending P
-			}
-			else if(defenders.size() == 0) {
-				// opp has atleast one attack on P and we are not defending P
-				p.printInfo("has 0 defenders, def -- by " + p.getValue());				
-				defenseScore -= p.getValue();
-			}
-			else if(attackers.size() == 0) {
-
-			} // enemy is not attacking P
-			else { 
-//				System.out.println("in the else block");
-				p.printInfo("\t checking...");
+			ArrayList<Piece> attackers = b.getAttackers(p, 3 - color);
+			ArrayList<Piece> defenders = b.getDefenders(p);
+			
+			if(!attackers.isEmpty()) { // go on if p is being attacked. 				
+				p.printInfo("is being attacked");
+				
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
-				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
-
 				for(Piece attacker : attackers) { 
 					attacker.printInfo("\t\t ATTACKER");
 					attackerValues.add(attacker.getValue());
 				}
-
+				
+				ArrayList<Integer> defenderValues = new ArrayList<Integer>();
 				for(Piece defender : defenders) { 
 					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
-
+				
 				Collections.sort(defenderValues);  
 				Collections.sort(attackerValues);
-
+				
+				
+				//:TODO check forks
+				
+				
+				// while loop simulates trading pieces. 
+					// .remove() is the piece getting captured. 
 				while(!attackerValues.isEmpty()) {
 					
-					if(attackerValues.size() == 1) {
-						if(attackerValues.get(0) >= p.getValue()){
-							// neutral. 
-							// opponent has one attacking piece and I have atleast one defending piece.
-							// if the value of attacker and piece attacked is same or if attacker value is greater, 
-							// 		the value of my defender does not matter since opponent has one attack
-							// 		and would attack first to trade.
-							// ex) Opp pawn attacking my pawn and my queen is defended pawn,
-								// neutral -> opp can take and i will retake with queen ,etc
-							System.out.println("\t\tneutral");
-							break;
-						}
-						if(p.getValue() > attackerValues.get(0)) {
-							
-							//:TODO here use Board.getAttackBlockers();
-							// check if there are any attack blockers
-//							for( Piece block : b.getAttackBlockers(attacker, victim))
-								
-								
-								
-							defenseScore -= p.getValue();
-							System.out.println("\t\tp.getValue > attackerValues.get(0)");
-							System.out.println("\t\tdef -- by " + p.getValue());
-							break;
-						}
-					}
-
 					if(defenderValues.isEmpty()) {
-						// opp has extra attacks after we have traded away our defenders.
-						for(int i = 0; i < attackerValues.size(); i++) { 
+						System.out.println("defenders.isEmpty()");
+						defenseScore -= p.getValue();
+						for(int i = 1; i < attackers.size(); i++) {
+							System.out.println("\t decrementing DefenseScore");
 							defenseScore--;
-							System.out.println("\t\tdef--");
-						}
+						} 
+						attackerValues.remove(0); // attacker capture p. 
 						break;
+					}
+					
+					if(attackerValues.size() == 1) {
+						
+						if((attackerValues.get(0) >= p.getValue()) && !defenderValues.isEmpty()) {
+							System.out.println("neutral spot");
+							attackerValues.remove(0); // attacker captures p 
+							defenderValues.remove(0); // defender captures attacker
+							break;
+						}
 					}
 
 					if(defenderValues.get(0) > attackerValues.get(0)){
 						// value of our lowest defender is greater than value of lowest opp attacker, not good
 						System.out.println("\t\tdef val > att val, reducing def by " + p.getValue());
 						defenseScore -= p.getValue();
+						
+						attackerValues.remove(0); // attacker captures p
+						defenderValues.remove(0); // defender captures attacker. 
 						break;
 					}
+					
 					defenderValues.remove(0);
 					attackerValues.remove(0);
+					System.out.println("passed one trade iteration");
 				}
 				// check when attackerValues is empty if we still have any defenders. 
 				if(attackerValues.isEmpty() && !defenderValues.isEmpty()) {
-					System.out.println(" still have defenders, def++");
-					for(int i = 0; i < defenderValues.size(); i++) 
+					for(int i = 0; i < defenderValues.size(); i++) { 
+						System.out.println("\tstill have defenders, def++");
 						defenseScore++;
+					}
 				}	
 			}
 		}

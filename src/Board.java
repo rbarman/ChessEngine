@@ -171,7 +171,7 @@ public class Board {
 	 * @return All opponent Pieces that attack Piece p.
 	 * If returned list is empty, there are no Pieces that currently attack P. 
 	 */
-	ArrayList<Piece> isAttackedBy(Piece p, int oppColor) {
+	ArrayList<Piece> getAttackers(Piece p, int oppColor) {
 //		if(inDebugMode == true)
 //			return null;
 		ArrayList<Piece>attackers = new ArrayList<Piece>();
@@ -185,11 +185,11 @@ public class Board {
 	
 	
 	boolean isDefended(Piece p){
-		ArrayList<Piece> defenders = isDefendedBy(p);
+		ArrayList<Piece> defenders = getDefenders(p);
 		return defenders.size() > 0;
 	}
 	
-	ArrayList<Piece> isDefendedBy(Piece p) {
+	ArrayList<Piece> getDefenders(Piece p) {
 		ArrayList<Piece>defenders = new ArrayList<Piece>();
 		p.side = 3 - p.side;
 		for(Piece d : getPiecesOfColor(3 - p.side)) {
@@ -596,7 +596,7 @@ public class Board {
 		
 		for(Piece p : getBishopAttackLinePieces(source, dest)) {
 			if(!p.isEmpty()) {
-				p.printInfo("invalid bishop move");
+//				p.printInfo("invalid bishop move");
 				return false;
 			}
 		}
@@ -621,7 +621,7 @@ public class Board {
 		
 		for(Piece p : getRookAttackLine(source, dest)) {
 			if(!p.isEmpty()) {
-				p.printInfo("invalid rook move");
+//				p.printInfo("invalid rook move");
 				return false;
 			}
 		}

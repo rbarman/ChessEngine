@@ -228,7 +228,7 @@ public class Main {
 			}
 			// a1 defended by
 			else if(command.contains("defended by")) {
-				for(Piece defender : b.isDefendedBy(b.getPieceAt(command.split(" ")[0])))
+				for(Piece defender : b.getDefenders(b.getPieceAt(command.split(" ")[0])))
 					defender.printInfo("defending!");
 			}
 			else if(command.equals("quit"))
