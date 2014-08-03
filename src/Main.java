@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 public class Main {
+	
 	static Board b;
 	static Bot bot;
 	static int botColor;
 	static int depth;
 	static ArrayList<OpeningLine> openingLines;
 
+	
 	public static void main(String[] args) {
 
 		Scanner scan = new Scanner(System.in);
@@ -23,6 +25,10 @@ public class Main {
 		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
 		fillBook();
 
+		BoardGUI bGUI = new BoardGUI();
+		bGUI.start();
+		
+		
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
@@ -47,7 +53,8 @@ public class Main {
 		openingLines = new ArrayList<>();
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader("/Users/Rohan/Development/Chess/src/Openings.txt"));
+			reader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/Openings.txt")); //dynamically finds openings.txt
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
