@@ -3,6 +3,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.*;
 
+/**
+ * @author Adam
+ * Ran simultaneously with the bot/user input.
+ * A basic chess board with inspiration taken from an online swing tutorial.
+ */
+
 public class BoardGUI extends Thread{
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
     private JButton[][] chessBoardSquares = new JButton[8][8];
