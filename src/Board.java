@@ -730,7 +730,7 @@ public class Board {
 		}
 		
 		if(inDebugMode == true) {
-//			printBoardContents();
+			mapLocations();
 			return;
 		}
 		
