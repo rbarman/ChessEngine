@@ -13,7 +13,6 @@ public class Main {
 	static int depth;
 	static ArrayList<OpeningLine> openingLines;
 
-	
 	public static void main(String[] args) {
 
 		Scanner scan = new Scanner(System.in);
@@ -28,16 +27,14 @@ public class Main {
 		BoardGUI bGUI = new BoardGUI();
 		bGUI.start();
 		
-		
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
 
 		bot = new Bot(botColor, depth, openingLines);
-		// "move bot" OR "move __ to __"
-		// bot move vs self move
 
+		// Enter in commands. 
 		while(true) {
 			if(b.isCheckMated()) 
 				return;
@@ -69,15 +66,32 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * @param command
+	 * Runs commands on the Board. 
+	 * For each possible command, the generic call is shown in the left most comment 
+	 * while a description of the command follows below it. 
+	 * 
+	 * P = Piece distinguished by notation ("a2")
+	 * n = any number
+	 * s = number that represents a side / player color (1 or 2)
+	 */
 	static void parseCommand(String command) {
 
-		try {	
-			// g2
+		try {
+			
+			// P 
+				// print information on P. "a2" 
 			if(command.length() == 2) 
 				b.getPieceAt(command).printInfo("");
-			// whose turn?
+			
+			// turn 
+				// print whose turn it is. 
 			else if(command.equals("turn"))
 				System.out.println("Turn = " + b.turn);
+			
+			// set turn s
+				// sets Board.turn value. 
 			else if(command.contains("set turn")) {
 				if(b.inDebugMode == false)
 					System.out.println("can only set turn in debugmode!");
@@ -86,20 +100,26 @@ public class Main {
 					System.out.println("turn is now " + b.turn);
 				}	
 			}
-			// debug shit.
 			else if(command.contains("debug")) {
+				// debug on 
+					//sets debug mode on
 				if(command.split(" ")[1].equals("on")) {
 					System.out.println("debug mode on");
 					b.inDebugMode = true;
 				}
+				// debug off  
+					// sets debug mode off
 				else if(command.split(" ")[1].equals("off")){
 					System.out.println("debug mode off");
 					b.inDebugMode = false;
 				}
+				// debug status 
+					// prints if in debug mode. 
 				else if(command.split(" ")[1].equals("status"))
 					System.out.println(b.inDebugMode);
 			}
-
+			// remove P. 
+				// Removes P => "remove a2"  
 			else if(command.contains("remove")) {
 				if(b.inDebugMode == false) {
 					System.out.println("can only remove when debug mode is true!");
@@ -109,7 +129,8 @@ public class Main {
 				}
 			}
 
-			// move a1 a2
+			// move P1 P2
+				// moves P1 to P2 if it is valid to move P1 to P2 
 			else if(command.contains("move")) {
 				String p1Coordinate = command.split(" ")[1];
 				Piece p1 = b.getPieceAt(p1Coordinate);
@@ -122,11 +143,12 @@ public class Main {
 				}
 				b.printBoardContents();
 			}
-			// valid a1 to a2
+			// valid P1 P2
+				// prints if it is valid to move P1 to P2 , "valid a2 a3"
 			else if(command.contains("valid")) {
 				String p1Coordinate = command.split(" ")[1];
 				Piece p1 = b.getPieceAt(p1Coordinate);
-				String p2Coordinate = command.split(" ")[3];
+				String p2Coordinate = command.split(" ")[2];
 				Piece p2 = b.getPieceAt(p2Coordinate);
 
 				if(b.isValidMove(p1, p2)) 
@@ -135,31 +157,27 @@ public class Main {
 					System.out.println("invalid move");
 			}
 
-			else if(command.contains("surround")) {
-				Piece king = b.getPieceAt(command.split(" ")[1]);
-				king.printInfo("king");
-				for(Piece p : b.getKingSurroundingPeces(king)) 
-					p.printInfo("");
-			}
-
-			// available a1
+			// available P
+				// prints all available moves for P. "available a2"
 			else if(command.contains("available")) {
 				Piece source = b.getPieceAt(command.split(" ")[1]);
 				for(Piece p : b.getAvailableMovesFor(source))
 					p.printInfo("available for " + command.split(" ")[1]);
 			}
 
-			// possible 1
-				// gets all possible moves for white. 
+			// possible s
+				// prints all possible moves for side s. 
 			else if(command.contains("possible")) { 
 				for(MovePair mp : b.getAvailableMoves(Integer.parseInt(command.split(" ")[1])))
 					mp.printPair("possible");
 			}
-
+			// all
+				// prints information on ALL pieces on board.
 			else if(command.equals("all")) {
 				b.printInfoOnAllPieces("pls");
 			}
-			// pieces 1
+			// pieces s
+				// prints information that belong to side s. 
 			else if (command.contains("pieces")) {
 				int color = Integer.parseInt(command.split(" ")[1]);
 				for(int i = 0; i < b.contents.length; i++){
@@ -171,13 +189,15 @@ public class Main {
 				}
 			}
 
-			// attacked a1
+			// attacked P
+				// prints if P is attacked, "attacked a2"
 			else if(command.contains("attacked")) {
 				Piece p = b.getPieceAt(command.split(" ")[1]);
 				System.out.println(b.isAttacked(p, 3 - p.side));
 			}
 
-			// material 1
+			// material s
+				// prints material score of s, "material 1"
 			else if(command.contains("material")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
@@ -185,7 +205,8 @@ public class Main {
 				else
 					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines).getMaterialScore(b));
 			}
-			// attack 1
+			// attack s
+				// prints attack score of s, "attack 1"
 			else if(command.contains("attack")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
@@ -193,7 +214,8 @@ public class Main {
 				else
 					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines).getAttackScore(b));
 			}
-			// defense 1
+			// defense s
+				// prints defense score of s, "defense 1"
 			else if(command.contains("defense")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
@@ -201,30 +223,40 @@ public class Main {
 				else
 					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines).getDefenseScore(b));
 			}
-
+			
+			// minimax
+				// prints best move for Bot given by minimax algorithm. Does not make the move for bot. 
 			else if(command.equals("minimax")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
 				best = bot.miniMaxMain(temp, depth);
 				best.print("BEST");
 			}
-
+			// alphabeta
+				// prints best move for Bot given by alphabeta algorithm. Does not make the move for bot. 
 			else if(command.equals("alphabeta")) {
 				Board temp = b.getCopy();
 				ScoredMovePair best;
 				best = bot.alphabetaMain(temp, depth);
 				best.print("best");
 			}
+			// bot go
+				// makes Bot's move based on openinglines or alphabeta.
 			else if(command.equals("bot go")) {
 				bot.move(b);
 			}
+			// set depth n
+				// sets depth of Bot
 			else if(command.contains("set depth")) {
 				depth = Integer.parseInt(command.split(" ")[2]);
 			}
+			// set color n
+				// sets color of Bot
 			else if(command.contains("set color")){
 				botColor = Integer.parseInt(command.split(" ")[2]);
 			}
-
+			// random
+				// makes a random move on Board based on current Board.turn value. 
 			else if(command.equals("random")) {
 				ArrayList<MovePair> mvs = b.getAvailableMoves(b.turn);
 				int randInt = new Random().nextInt(mvs.size());
@@ -233,29 +265,36 @@ public class Main {
 				b.printBoardContents();
 				b.playedMoveList.add(new MovePair(randomMove.source,randomMove.dest));
 			}
-			// a1 defended by
+			// P defended by
+				// prints all Pieces that defend P. 
 			else if(command.contains("defended by")) {
 				for(Piece defender : b.getDefenders(b.getPieceAt(command.split(" ")[0])))
 					defender.printInfo("defending!");
 			}
+			// quit
+				// exits program
 			else if(command.equals("quit"))
 				System.exit(0);
+			// check status
+				// prints if King of current Board.turn is in check.
 			else if(command.equals("check status")) {
 				b.isChecked();
 			}
+			// list
+				// prints all valid moves that have been played on the Board. 
 			else if(command.equals("list")){
 				for(MovePair mp : b.playedMoveList)
 					System.out.printf("%s %s\n", mp.source.getAlgebraic(), mp.dest.getAlgebraic());
 			}
-			// aline g1 g3 etc
-			// shows all pieces within attacker's attack line. 
+			// aline P1 P2
+				// shows all Pieces that are in the path of P1's attack to P2 
 			else if(command.contains("aline")) {
 				Piece attacker = b.getPieceAt(command.split(" ")[1]);
 				Piece victim = b.getPieceAt(command.split(" ")[2]);
 				for(Piece p : b.getAttackLinePieces(attacker, victim))
 					p.printInfo("in attack line!");
 			}
-			
+			// print board
 			else if(command.equals("print board"))
 				b.printBoardContents();
 			}
