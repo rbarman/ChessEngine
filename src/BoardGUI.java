@@ -28,10 +28,10 @@ public class BoardGUI extends Thread implements MouseListener  {
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	@SuppressWarnings("unused")
 	protected ImageIcon createImageIcon(String piece, String description) {
-		String imgURL = System.getProperty("user.dir") + "/src/Openings.txt";
+		String path = System.getProperty("user.dir") + "/src/assets/" + piece;
+		String imgURL = path;
 		if (imgURL != null) {
-			return new ImageIcon(
-					System.getProperty("user.dir") + "/src/assets/" + piece, description);
+			return new ImageIcon(path, description);
 		} else {
 			System.err.println("Couldn't find file: " + piece);
 			return null;
@@ -156,7 +156,6 @@ public class BoardGUI extends Thread implements MouseListener  {
 		// ensures the minimum size is enforced.
 		f.setMinimumSize(f.getSize());
 		f.setVisible(true);
-		System.out.println("[0][0]: " + BoardPosition[4][0]);
 	}
 
 	 public void mousePressed(MouseEvent e) {
