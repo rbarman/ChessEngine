@@ -31,8 +31,7 @@ public class BoardGUI extends Thread implements MouseListener  {
 		String imgURL = System.getProperty("user.dir") + "/src/Openings.txt";
 		if (imgURL != null) {
 			return new ImageIcon(
-					"E:\\eclipse\\chess\\ChessEngine\\src\\assets\\" + piece,
-					description);
+					System.getProperty("user.dir") + "/src/assets/" + piece, description);
 		} else {
 			System.err.println("Couldn't find file: " + piece);
 			return null;
@@ -54,7 +53,7 @@ public class BoardGUI extends Thread implements MouseListener  {
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
 			for (int j = 0; j < chessBoardSquares[i].length; j++) {
-				System.out.println("i: " + i + "j: " + j);
+		
 				JButton b = new JButton();
 				b.addMouseListener(this);
 				b.setMargin(buttonMargin);
