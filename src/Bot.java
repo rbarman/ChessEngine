@@ -108,6 +108,9 @@ public class Bot {
 			if(!attackers.isEmpty()) { // go on if p is being attacked. 				
 				p.printInfo("is being attacked");
 				
+				// Equal or unequal trading is [currently] determined by looking at Piece value. 
+				// For each attacker and defender, get the value and put in respective list. 
+				
 				ArrayList<Integer> attackerValues = new ArrayList<Integer>();
 				for(Piece attacker : attackers) { 
 					attacker.printInfo("\t\t ATTACKER");
@@ -119,21 +122,21 @@ public class Bot {
 					defender.printInfo("\t\t DEFENDER");
 					defenderValues.add(defender.getValue());
 				}
-				
+				// Sort the Piece values with the intention that rational
+				// players will trade away their lowest valued pieces first rather than higher valued pieces. 
 				Collections.sort(defenderValues);  
 				Collections.sort(attackerValues);
 				
-				
-				//:TODO check forks
-				
-				
 				// while loop simulates trading pieces. 
-					// .remove() is the piece getting captured. 
+					// From Defense point of view, we look to trade until there are no more attackers. (attackersValues.isEmpty())
+					// ArrayList.remove() simulates a Piece being captured / traded away.  
 				while(!attackerValues.isEmpty()) {
 					
 					if(defenderValues.isEmpty()) {
 						System.out.println("defenders.isEmpty()");
+						// If we don't have any defenders, then we effectively lose P. 
 						defenseScore -= p.getValue();
+						// defenseScore decremented for every remaining attacker on P if P has 0 remaining defenders. 
 						for(int i = 1; i < attackers.size(); i++) {
 							System.out.println("\t decrementing DefenseScore");
 							defenseScore--;
@@ -142,14 +145,13 @@ public class Bot {
 						break;
 					}
 					
-					if(attackerValues.size() == 1) {
-						
-						if((attackerValues.get(0) >= p.getValue()) && !defenderValues.isEmpty()) {
-							System.out.println("neutral spot");
-							attackerValues.remove(0); // attacker captures p 
-							defenderValues.remove(0); // defender captures attacker
-							break;
-						}
+					// There is one attacker left with greater or equal value to P and we have defenders. 
+						// This is a neutral spot for defender. 
+					if(attackerValues.size() == 1 && (attackerValues.get(0) >= p.getValue()) && !defenderValues.isEmpty()) {
+						System.out.println("neutral spot");
+						attackerValues.remove(0); // attacker captures p 
+						defenderValues.remove(0); // defender captures attacker
+						break;
 					}
 
 					if(defenderValues.get(0) > attackerValues.get(0)){
@@ -161,9 +163,9 @@ public class Bot {
 						defenderValues.remove(0); // defender captures attacker. 
 						break;
 					}
+					attackerValues.remove(0); // attacker captures P if first iteration , else captures defender. 
+					defenderValues.remove(0); // defender captures attacker
 					
-					defenderValues.remove(0);
-					attackerValues.remove(0);
 					System.out.println("passed one trade iteration");
 				}
 				// check when attackerValues is empty if we still have any defenders. 
