@@ -35,9 +35,9 @@ public class BoardGUI extends Thread implements MouseListener {
 			return null;
 		}
 	}
-	
+
 	private ImageIcon emptyIcon;;
-	
+
 	public final void initializeGui() {
 		// set up the main GUI
 		gui.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -49,8 +49,6 @@ public class BoardGUI extends Thread implements MouseListener {
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
 
-		
-		
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
@@ -169,31 +167,36 @@ public class BoardGUI extends Thread implements MouseListener {
 	private boolean noneSelected = true;
 	private int xCord = 0;
 	private int yCord = 0;
-	
+
 	public void mouseReleased(MouseEvent e) {
 
 		System.out.println("Mouse released; # of clicks: " + e.getClickCount());
 		JButton button = (JButton) e.getComponent();
 		int i = 0;
 		int j = 0;
-		outerloop:
-		for (i = 0; i < 8; i++) {
+		outerloop: for (i = 0; i < 8; i++) {
 			for (j = 0; j < 8; j++) {
 				if (chessBoardSquares[i][j] == button) {
 					System.out.println("[" + i + ", " + j + "] Current Piece: "
 							+ button.getIcon());
-					 break outerloop;
+					break outerloop;
 				}
 			}
 		}
-		if(noneSelected){
-			 xCord = i;
-			 yCord = j;
-		}
-		else if(!noneSelected && (i != xCord || j != yCord)){
-			chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord].getIcon());
-			//chessBoardSquares[i][j].
-			chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+		if (noneSelected) {
+			xCord = i;
+			yCord = j;
+			button.setBorder(new LineBorder(Color.RED));
+		} else if (!noneSelected) {
+			if ((i == xCord && j == yCord)) {
+				chessBoardSquares[xCord][yCord].setBorder(null);
+			} 
+			else {
+				chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord]
+						.getIcon());
+				chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+				chessBoardSquares[xCord][yCord].setBorder(null);
+			}
 		}
 		noneSelected = !noneSelected;
 	}
