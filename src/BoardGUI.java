@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -37,12 +35,9 @@ public class BoardGUI extends Thread implements MouseListener {
 			return null;
 		}
 	}
-
-	public void printSquare(int i, int j) {
-		System.out
-				.println(chessBoardSquares[7 - i][7 - j].getIcon().toString());
-	}
-
+	
+	private ImageIcon emptyIcon;;
+	
 	public final void initializeGui() {
 		// set up the main GUI
 		gui.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -54,6 +49,8 @@ public class BoardGUI extends Thread implements MouseListener {
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
 
+		
+		
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
@@ -67,6 +64,7 @@ public class BoardGUI extends Thread implements MouseListener {
 				ImageIcon icon = new ImageIcon(new BufferedImage(64, 64,
 						BufferedImage.TYPE_INT_ARGB));
 				icon.setDescription("empty");
+				emptyIcon = icon;
 				String temp = "";
 
 				if (i == 1) {
@@ -168,14 +166,12 @@ public class BoardGUI extends Thread implements MouseListener {
 		// + e.getClickCount());
 	}
 
-	public boolean noneSelected = true;
-	public int xCord = 0;
-	public int yCord = 0;
+	private boolean noneSelected = true;
+	private int xCord = 0;
+	private int yCord = 0;
 	
 	public void mouseReleased(MouseEvent e) {
-		
-		
-		
+
 		System.out.println("Mouse released; # of clicks: " + e.getClickCount());
 		JButton button = (JButton) e.getComponent();
 		int i = 0;
@@ -196,7 +192,8 @@ public class BoardGUI extends Thread implements MouseListener {
 		}
 		else if(!noneSelected && (i != xCord || j != yCord)){
 			chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord].getIcon());
-			chessBoardSquares[xCord][yCord].setIcon(null);
+			//chessBoardSquares[i][j].
+			chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
 		}
 		noneSelected = !noneSelected;
 	}
