@@ -13,7 +13,7 @@ import javax.swing.border.*;
  *         with inspiration taken from an online swing tutorial.
  */
 
-public class BoardGUI extends Thread implements MouseListener  {
+public class BoardGUI extends Thread implements MouseListener {
 	private final JPanel gui = new JPanel(new BorderLayout(3, 3));
 	private JButton[][] chessBoardSquares = new JButton[8][8];
 	private JPanel chessBoard;
@@ -38,6 +38,11 @@ public class BoardGUI extends Thread implements MouseListener  {
 		}
 	}
 
+	public void printSquare(int i, int j) {
+		System.out
+				.println(chessBoardSquares[7 - i][7 - j].getIcon().toString());
+	}
+
 	public final void initializeGui() {
 		// set up the main GUI
 		gui.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -48,12 +53,12 @@ public class BoardGUI extends Thread implements MouseListener  {
 		chessBoard = new JPanel(new GridLayout(0, 9));
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
-		
+
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
 			for (int j = 0; j < chessBoardSquares[i].length; j++) {
-		
+
 				JButton b = new JButton();
 				b.addMouseListener(this);
 				b.setMargin(buttonMargin);
@@ -61,46 +66,46 @@ public class BoardGUI extends Thread implements MouseListener  {
 				// 'fill this in' using a transparent icon..
 				ImageIcon icon = new ImageIcon(new BufferedImage(64, 64,
 						BufferedImage.TYPE_INT_ARGB));
-
+				icon.setDescription("empty");
 				String temp = "";
 
-				if (j == 1) {
-					icon = createImageIcon("0_pawn.png", temp = "White Pawn");
-				} else if (j == 6) {
-					icon = createImageIcon("1_pawn.png", temp = "Black Pawn");
-				} else if (j == 0) {
-					if (i == 0 || i == 7) {
+				if (i == 1) {
+					icon = createImageIcon("0_pawn.png", temp = "White_Pawn");
+				} else if (i == 6) {
+					icon = createImageIcon("1_pawn.png", temp = "Black_Pawn");
+				} else if (i == 0) {
+					if (j == 0 || j == 7) {
 						icon = createImageIcon("0_rook.png",
-								temp = "White Rook");
-					} else if (i == 1 || i == 6) {
+								temp = "White_Rook");
+					} else if (j == 1 || j == 6) {
 						icon = createImageIcon("0_knight.png",
-								temp = "White Knight");
-					} else if (i == 2 || i == 5) {
+								temp = "White_Knight");
+					} else if (j == 2 || j == 5) {
 						icon = createImageIcon("0_bishop.png",
-								temp = "White Bishop");
-					} else if (i == 4) {
+								temp = "White_Bishop");
+					} else if (j == 4) {
 						icon = createImageIcon("0_queen.png",
-								temp = "White Queen");
-					} else if (i == 3) {
+								temp = "White_Queen");
+					} else if (j == 3) {
 						icon = createImageIcon("0_king.png",
-								temp = "White King");
+								temp = "White_King");
 					}
-				} else if (j == 7) {
-					if (i == 0 || i == 7) {
+				} else if (i == 7) {
+					if (j == 0 || j == 7) {
 						icon = createImageIcon("1_rook.png",
-								temp = "Black Rook");
-					} else if (i == 1 || i == 6) {
+								temp = "Black_Rook");
+					} else if (j == 1 || j == 6) {
 						icon = createImageIcon("1_knight.png",
-								temp = "Black Knight");
-					} else if (i == 2 || i == 5) {
+								temp = "Black_Knight");
+					} else if (j == 2 || j == 5) {
 						icon = createImageIcon("1_bishop.png",
-								temp = "Black Bishop");
-					} else if (i == 4) {
+								temp = "Black_Bishop");
+					} else if (j == 4) {
 						icon = createImageIcon("1_queen.png",
-								temp = "Black Queen");
-					} else if (i == 3) {
+								temp = "Black_Queen");
+					} else if (j == 3) {
 						icon = createImageIcon("1_king.png",
-								temp = "Black King");
+								temp = "Black_King");
 					}
 				}
 
@@ -123,14 +128,14 @@ public class BoardGUI extends Thread implements MouseListener  {
 					SwingConstants.CENTER));
 		}
 		// fill the black non-pawn piece row
-		for (int i = 0; i < 8; i++) {
+		for (int i = 7; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) {
 				switch (j) {
 				case 0:
-					chessBoard.add(new JLabel("" + (8 - i),
+					chessBoard.add(new JLabel("" + (i + 1),
 							SwingConstants.CENTER));
 				default:
-					chessBoard.add(chessBoardSquares[j][i]);
+					chessBoard.add(chessBoardSquares[i][j]);
 				}
 			}
 		}
@@ -158,29 +163,55 @@ public class BoardGUI extends Thread implements MouseListener  {
 		f.setVisible(true);
 	}
 
-	 public void mousePressed(MouseEvent e) {
-		 //System.out.println("Mouse pressed; # of clicks: "
-	                   // + e.getClickCount());
-	    }
+	public void mousePressed(MouseEvent e) {
+		// System.out.println("Mouse pressed; # of clicks: "
+		// + e.getClickCount());
+	}
 
-	    public void mouseReleased(MouseEvent e) {
-	    	System.out.println("Mouse released; # of clicks: "
-	                    + e.getClickCount());
-	    	String button = e.getComponent().toString();
-	    	System.out.println("Button: " + button);
-	    }
+	public boolean noneSelected = true;
+	public int xCord = 0;
+	public int yCord = 0;
+	
+	public void mouseReleased(MouseEvent e) {
+		
+		
+		
+		System.out.println("Mouse released; # of clicks: " + e.getClickCount());
+		JButton button = (JButton) e.getComponent();
+		int i = 0;
+		int j = 0;
+		outerloop:
+		for (i = 0; i < 8; i++) {
+			for (j = 0; j < 8; j++) {
+				if (chessBoardSquares[i][j] == button) {
+					System.out.println("[" + i + ", " + j + "] Current Piece: "
+							+ button.getIcon());
+					 break outerloop;
+				}
+			}
+		}
+		if(noneSelected){
+			 xCord = i;
+			 yCord = j;
+		}
+		else if(!noneSelected && (i != xCord || j != yCord)){
+			chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord].getIcon());
+			chessBoardSquares[xCord][yCord].setIcon(null);
+		}
+		noneSelected = !noneSelected;
+	}
 
-	    public void mouseEntered(MouseEvent e) {
-	    	//System.out.println("Mouse entered");
-	    }
+	public void mouseEntered(MouseEvent e) {
+		// System.out.println("Mouse entered");
+	}
 
-	    public void mouseExited(MouseEvent e) {
-	    	//System.out.println("Mouse exited");
-	    }
+	public void mouseExited(MouseEvent e) {
+		// System.out.println("Mouse exited");
+	}
 
-	    public void mouseClicked(MouseEvent e) {
-	       //System.out.println("Mouse clicked (# of clicks: "
-	                   // + e.getClickCount());
-	    }
+	public void mouseClicked(MouseEvent e) {
+		// System.out.println("Mouse clicked (# of clicks: "
+		// + e.getClickCount());
+	}
 
 }
