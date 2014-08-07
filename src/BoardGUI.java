@@ -46,7 +46,7 @@ public class BoardGUI extends Thread implements MouseListener {
 		//chessBoardSquares[sourceX][sourceY].setIcon(emptyIcon);
 		
 			//board.makeMove(source, dest);
-			chessBoardSquares[7-DY][DX].setIcon(chessBoardSquares[7-SY][DX+1]
+			chessBoardSquares[7-DY][DX].setIcon(chessBoardSquares[7-SY][SX]
 					.getIcon());
 			chessBoardSquares[7-SY][SX].setIcon(emptyIcon);
 			
