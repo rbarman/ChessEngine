@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -20,9 +18,10 @@ public class BoardGUI extends Thread implements MouseListener {
 	private String[][] BoardPosition = new String[8][8];
 	
 	private ImageIcon emptyIcon;
-	
+	private Board board;
 
-	BoardGUI() {
+	BoardGUI(Board board) {
+		this.board = board;
 		initializeGui();
 	}
 
@@ -39,8 +38,22 @@ public class BoardGUI extends Thread implements MouseListener {
 		}
 	}
 
+	public void editBoard(int SX, int SY, int DX, int DY){
+		System.out.println("in editBoard");
+		//i = 7-i;
+		System.out.printf("x : %d\t y : %d\t dx : %d\t dy : %d\n", SX, SY,DX,DY);
+		//chessBoardSquares[destX][destY].setIcon(chessBoardSquares[sourceX][sourceY].getIcon());
+		//chessBoardSquares[sourceX][sourceY].setIcon(emptyIcon);
+		
+			//board.makeMove(source, dest);
+			chessBoardSquares[7-DY][DX].setIcon(chessBoardSquares[7-SY][DX+1]
+					.getIcon());
+			chessBoardSquares[7-SY][SX].setIcon(emptyIcon);
+			
+		
+		
+	}
 	
-
 	public final void initializeGui() {
 		// set up the main GUI
 		gui.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -62,8 +75,7 @@ public class BoardGUI extends Thread implements MouseListener {
 				b.setMargin(buttonMargin);
 				// our chess pieces are 64x64 px in size, so we'll
 				// 'fill this in' using a transparent icon..
-				ImageIcon icon = new ImageIcon(new BufferedImage(64, 64,
-						BufferedImage.TYPE_INT_ARGB));
+				ImageIcon icon = new ImageIcon();
 				icon.setDescription("empty");
 				emptyIcon = icon;
 				String temp = "";
@@ -150,21 +162,18 @@ public class BoardGUI extends Thread implements MouseListener {
 
 	public void run() {
 		BoardGUI cb = this;
+		
 		JFrame f = new JFrame("Chess");
 		f.add(cb.getGui());
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLocationByPlatform(true);
-		// ensures the frame is the minimum size it needs to be
-		// in order display the components within it
 		f.pack();
-		// ensures the minimum size is enforced.
 		f.setMinimumSize(f.getSize());
 		f.setVisible(true);
 	}
 
 	public void mousePressed(MouseEvent e) {
-		// System.out.println("Mouse pressed; # of clicks: "
-		// + e.getClickCount());
+		
 	}
 
 	private boolean noneSelected = true;
@@ -173,15 +182,15 @@ public class BoardGUI extends Thread implements MouseListener {
 
 	public void mouseReleased(MouseEvent e) {
 
-		System.out.println("Mouse released; # of clicks: " + e.getClickCount());
+		//System.out.println("Mouse released; # of clicks: " + e.getClickCount());
 		JButton button = (JButton) e.getComponent();
 		int i = 0;
 		int j = 0;
 		outerloop: for (i = 0; i < 8; i++) {
 			for (j = 0; j < 8; j++) {
 				if (chessBoardSquares[i][j] == button) {
-					System.out.println("[" + i + ", " + j + "] Current Piece: "
-							+ button.getIcon());
+					//System.out.println("[" + i + ", " + j + "] Current Piece: "
+						//	+ button.getIcon());
 					break outerloop;
 				}
 			}
@@ -197,15 +206,25 @@ public class BoardGUI extends Thread implements MouseListener {
 			if ((i == xCord && j == yCord)) {
 				chessBoardSquares[xCord][yCord].setBorder(null);
 			} 
+			
 			else {
-				chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord]
-						.getIcon());
-				chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+				
+				Piece source = board.getPieceAt(yCord, 7-xCord);
+				//source.printInfo("source");
+				Piece dest = board.getPieceAt(j, 7-i);
+				//dest.printInfo("dest");
+				
+				if(board.isValidMove(source, dest)){
+					board.makeMove(source, dest);
+					chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord]
+							.getIcon());
+					chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+					Main.bot.move(board);
+				}
 				chessBoardSquares[xCord][yCord].setBorder(null);
 			}
 			noneSelected = !noneSelected;
 		}
-		
 	}
 
 	public void mouseEntered(MouseEvent e) {

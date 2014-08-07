@@ -12,7 +12,7 @@ public class Main {
 	static int botColor;
 	static int depth;
 	static ArrayList<OpeningLine> openingLines;
-
+	static BoardGUI bGUI;
 	public static void main(String[] args) {
 
 		@SuppressWarnings("resource")
@@ -25,16 +25,21 @@ public class Main {
 		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
 		fillBook();
 
-		BoardGUI bGUI = new BoardGUI();
-		bGUI.start();
+		
 		
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
-
-		bot = new Bot(botColor, depth, openingLines);
-
+		
+		bGUI = new BoardGUI(b);
+	
+		bGUI.start();
+		
+		
+		
+		bot = new Bot(botColor, depth, openingLines, bGUI);
+		
 		// Enter in commands. 
 		while(true) {
 			if(b.isCheckMated()) 
@@ -202,27 +207,27 @@ public class Main {
 			else if(command.contains("material")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getMaterialScore(b));
 				else
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getMaterialScore(b));
 			}
 			// attack s
 				// prints attack score of s, "attack 1"
 			else if(command.contains("attack")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getAttackScore(b));
 				else
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getAttackScore(b));
 			}
 			// defense s
 				// prints defense score of s, "defense 1"
 			else if(command.contains("defense")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getDefenseScore(b));
 				else
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getDefenseScore(b));
 			}
 			
 			// minimax

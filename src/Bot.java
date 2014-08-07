@@ -12,17 +12,18 @@ public class Bot {
 	int depth;  // depth is how many plies / moves ahead Bot will think. Higher depth results in higher difficulty 
 	ArrayList<OpeningLine>openingLines;
 	boolean inOpening = true;
-
+	BoardGUI boardGUI;
 	/**
 	 * @param color
 	 * @param depth
 	 * @param openingLines
 	 * Creates Bot based on color, depth, and openingLines.
 	 */
-	public Bot(int color, int depth, ArrayList<OpeningLine> openingLines) {
+	public Bot(int color, int depth, ArrayList<OpeningLine> openingLines, BoardGUI boardGUI) {
 		this.color = color;
 		this.depth = depth;
 		this.openingLines = openingLines;
+		this.boardGUI = boardGUI;
 	}	
 	
 	/**
@@ -30,10 +31,11 @@ public class Bot {
 	 * Bot makes move on b.
 	 */
 	public void move(Board b){
-		if(inOpening)
-			openingMove(b);
-		else
-			alphaBetaMove(b);
+//		if(inOpening)
+//			openingMove(b);
+//		else
+		alphaBetaMove(b);
+		b.printBoardContents();
 	}
 		
 	/**
@@ -46,6 +48,7 @@ public class Bot {
 				// later make randomization for e2e4, d2d4, etc
 			MovePair e2e4 = new MovePair(b.getPieceAt("e2"), b.getPieceAt("e4"));
 			b.makeMove(e2e4.source, e2e4.dest);
+			boardGUI.editBoard(e2e4.source.x, e2e4.source.y, e2e4.dest.x, e2e4.dest.y);
 			e2e4.printPair("BOT will move");
 		}
 		else if(b.moveCount == 1 && color == 2) {
@@ -53,6 +56,7 @@ public class Bot {
 				// later make randomization for all supported openings. 
 			MovePair e7e5 = new MovePair(b.getPieceAt("e7"), b.getPieceAt("e5"));
 			b.makeMove(e7e5.source, e7e5.dest);
+			boardGUI.editBoard(e7e5.source.x, e7e5.source.y, e7e5.dest.x, e7e5.dest.y);
 			e7e5.printPair("BOT will move");
 		}
 		else  {
@@ -86,7 +90,7 @@ public class Bot {
 	 * Attack Score of Bot would be equal to the opposite of defense score of Bot's opponent. 
 	 */
 	public int getAttackScore(Board b) { 
-		return -1 * new Bot(3 - color, depth, openingLines).getDefenseScore(b);
+		return -1 * new Bot(3 - color, depth, openingLines, boardGUI).getDefenseScore(b);
 	}
 
 	/**
@@ -224,7 +228,8 @@ public class Bot {
 		Board temp = b.getCopy();
 		ScoredMovePair botMove = alphabetaMain(temp, depth);
 		botMove.movePair.printPair("BOT will move" );
-//		b.makeMove(botMove.movePair.source, botMove.movePair.dest);
+		b.makeMove(botMove.movePair.source, botMove.movePair.dest);
+		boardGUI.editBoard(botMove.movePair.source.x, botMove.movePair.source.y, botMove.movePair.dest.x, botMove.movePair.dest.y);
 	}
 
 	/**

@@ -663,7 +663,7 @@ public class Board {
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[0][6] = new Piece('r');
-				contents[0][8] = new Piece('.');
+				contents[0][7] = new Piece('.');
 			}
 			else if(hDiff == -2) {
 				System.out.println("queen side castle");
@@ -698,7 +698,7 @@ public class Board {
 	 */
 	void makeMove(Piece source, Piece dest) {
 		
-		Piece[][] prevBoardState = new Piece[9][9];
+		Piece[][] prevBoardState = new Piece[8][8];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
 				  prevBoardState[i][j]=contents[i][j];
