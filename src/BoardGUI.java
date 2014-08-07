@@ -18,6 +18,9 @@ public class BoardGUI extends Thread implements MouseListener {
 	private static final String COLS = "ABCDEFGH";
 
 	private String[][] BoardPosition = new String[8][8];
+	
+	private ImageIcon emptyIcon;
+	
 
 	BoardGUI() {
 		initializeGui();
@@ -36,7 +39,7 @@ public class BoardGUI extends Thread implements MouseListener {
 		}
 	}
 
-	private ImageIcon emptyIcon;;
+	
 
 	public final void initializeGui() {
 		// set up the main GUI
@@ -184,9 +187,12 @@ public class BoardGUI extends Thread implements MouseListener {
 			}
 		}
 		if (noneSelected) {
-			xCord = i;
-			yCord = j;
-			button.setBorder(new LineBorder(Color.RED));
+			if(!button.getIcon().toString().equalsIgnoreCase(emptyIcon.toString())){
+				xCord = i;
+				yCord = j;
+				button.setBorder(new LineBorder(Color.RED));
+				noneSelected = !noneSelected;
+			}
 		} else if (!noneSelected) {
 			if ((i == xCord && j == yCord)) {
 				chessBoardSquares[xCord][yCord].setBorder(null);
@@ -197,8 +203,9 @@ public class BoardGUI extends Thread implements MouseListener {
 				chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
 				chessBoardSquares[xCord][yCord].setBorder(null);
 			}
+			noneSelected = !noneSelected;
 		}
-		noneSelected = !noneSelected;
+		
 	}
 
 	public void mouseEntered(MouseEvent e) {
