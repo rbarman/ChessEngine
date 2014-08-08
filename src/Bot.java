@@ -10,7 +10,6 @@ import java.util.Collections;
 public class Bot {
 	int color; // color of bot, 1 = white, 2 = black
 	int depth;  // depth is how many plies / moves ahead Bot will think. Higher depth results in higher difficulty 
-	ArrayList<OpeningLine>openingLines;
 	boolean inOpening = true;
 	BoardGUI boardGUI;
 	/**
@@ -19,10 +18,9 @@ public class Bot {
 	 * @param openingLines
 	 * Creates Bot based on color, depth, and openingLines.
 	 */
-	public Bot(int color, int depth, ArrayList<OpeningLine> openingLines, BoardGUI boardGUI) {
+	public Bot(int color, int depth, BoardGUI boardGUI) {
 		this.color = color;
 		this.depth = depth;
-		this.openingLines = openingLines;
 		this.boardGUI = boardGUI;
 	}	
 	
@@ -31,11 +29,11 @@ public class Bot {
 	 * Bot makes move on b.
 	 */
 	public void move(Board b){
-//		if(inOpening)
-//			openingMove(b);
-//		else
+		if(inOpening)
+			openingMove(b);
+		else
 		alphaBetaMove(b);
-		b.printBoardContents();
+			b.printBoardContents();
 	}
 		
 	/**
@@ -49,6 +47,7 @@ public class Bot {
 			MovePair e2e4 = new MovePair(b.getPieceAt("e2"), b.getPieceAt("e4"));
 			b.makeMove(e2e4.source, e2e4.dest);
 			boardGUI.editBoard(e2e4.source.x, e2e4.source.y, e2e4.dest.x, e2e4.dest.y);
+			b.playedMoveList.add(e2e4);
 			e2e4.printPair("BOT will move");
 		}
 		else if(b.moveCount == 1 && color == 2) {
@@ -57,30 +56,44 @@ public class Bot {
 			MovePair e7e5 = new MovePair(b.getPieceAt("e7"), b.getPieceAt("e5"));
 			b.makeMove(e7e5.source, e7e5.dest);
 			boardGUI.editBoard(e7e5.source.x, e7e5.source.y, e7e5.dest.x, e7e5.dest.y);
+			b.playedMoveList.add(e7e5);
 			e7e5.printPair("BOT will move");
 		}
 		else  {
-			// boolean bs is a ugly way to exit inner for loop to get to outer for loop. 
-			for(OpeningLine ol : openingLines) {
-				boolean bs = false;
+			
+			// For each stored OpeningLine, compare it to Board's playedMoveList for similarities
+				// if there is a match, then play the next successive move in the OpeningLine
+			// If there are no matches from all stored OpeningLine, then we are effectively out of opening and play with alphabeta
+			for(OpeningLine ol : Main.openingLines) {
+				boolean bs = false; // boolean bs is a ugly way to exit inner for loop to get to outer for loop.
 				String[] olSplit = ol.line.split(" ");
-								
+				
+				if(b.playedMoveList.size() > olSplit.length)
+					continue; // played more moves that stored for that Opening Line, continue to next Opening Line
+				
 				for(int i = 0; i < b.playedMoveList.size(); i++) {
 //					System.out.printf("o1 split vs playedMove : %s vs %s\n", olSplit[i], b.playedMoveList.get(i).simpleName());
 					if(!olSplit[i].equalsIgnoreCase(b.playedMoveList.get(i).simpleName())) 
 						bs = true;
 				}
-				// if we can get past this for loop this means that there are matches with the current o1 and b.playedMoveList.
-				// if o1Split is smaller than b.playedMoveList, then we can not use this opening line. 
+				// if we can get past this for loop this means that there are matches with the current ol and b.playedMoveList.
+				// if olSplit is smaller than b.playedMoveList, then we can not use this opening line. 
 				if(!bs && olSplit.length > b.playedMoveList.size()) {
 					System.out.println("recognized : " + ol.name);
-					System.out.println("will play... " + olSplit[b.playedMoveList.size()]);
+					
+					String nextMove = olSplit[b.playedMoveList.size()];
+					Piece source = b.getPieceAt(nextMove.substring(0, 2));
+					Piece dest = b.getPieceAt(nextMove.substring(2,4));
+					MovePair nextOpeningMove = new MovePair(source, dest);
+					nextOpeningMove.printPair("opening move -> will play...");
+					b.playedMoveList.add(nextOpeningMove);
+					b.makeMove(source, dest);
 					return;
 				}
 			}
 			System.out.println("No Opening matches found 2!");
 			inOpening = false;
-//			alphaBetaMove(b);
+			alphaBetaMove(b);
 		}
 	}
 	
@@ -90,7 +103,7 @@ public class Bot {
 	 * Attack Score of Bot would be equal to the opposite of defense score of Bot's opponent. 
 	 */
 	public int getAttackScore(Board b) { 
-		return -1 * new Bot(3 - color, depth, openingLines, boardGUI).getDefenseScore(b);
+		return -1 * new Bot(3 - color, depth, boardGUI).getDefenseScore(b);
 	}
 
 	/**
