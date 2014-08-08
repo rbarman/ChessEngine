@@ -38,9 +38,9 @@ public class Main {
 		b.mapLocations();		
 		b.printBoardContents();
 		
-		bGUI = new BoardGUI(b);
+//		bGUI = new BoardGUI(b);
 	
-		bGUI.start();
+//		bGUI.start();
 		
 		
 		

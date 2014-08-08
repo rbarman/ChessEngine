@@ -33,7 +33,7 @@ public class Piece {
 			side = 1;
 		else if(Character.isLowerCase(this.name))
 			side = 2;
-		else if(this.name == '.' || this.name == '-') // no significance for . or - atm
+		else if(this.name == '.') 
 			side = 3;
 	}
 	 
@@ -66,7 +66,7 @@ public class Piece {
 	 * print's Piece's name
 	 */
 	public void print() {
-		System.out.print(this.name);
+		System.out.print(this.name + "  ");
 	}
 	
 	/**

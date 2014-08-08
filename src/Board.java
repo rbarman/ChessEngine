@@ -21,14 +21,16 @@ public class Board {
 		int count = 8;
 		for (int i = 0; i < contents.length; i++) {
 			System.out.printf("%d ", count--);
+			System.out.print("| ");
 			for (int j = 0; j < contents[i].length; j++) {
-				System.out.print("|");
 				contents[i][j].print();
-				System.out.print("| ");
 			}
-			System.out.println("\n");
+			if(count == 0)
+				System.out.print("\n-----------------------------\n");
+			else
+				System.out.println("\n  |");
 		}
-		System.out.println("*  a   b   c   d   e   f   g   h");
+		System.out.println("* | a  b  c  d  e  f  g  h");
 	}
 	
 	/**
@@ -55,18 +57,18 @@ public class Board {
 				{ new Piece('p'), new Piece('p'), new Piece('p'),
 						new Piece('p'), new Piece('p'), new Piece('p'),
 						new Piece('p'), new Piece('p') },
-				{ new Piece('.'), new Piece('-'), new Piece('.'),
-						new Piece('-'), new Piece('.'), new Piece('-'),
-						new Piece('.'), new Piece('-') },
-				{ new Piece('-'), new Piece('.'), new Piece('-'),
-						new Piece('.'), new Piece('-'), new Piece('.'),
-						new Piece('-'), new Piece('.') },
-				{ new Piece('.'), new Piece('-'), new Piece('.'),
-						new Piece('-'), new Piece('.'), new Piece('-'),
-						new Piece('.'), new Piece('-') },
-				{  new Piece('-'), new Piece('.'), new Piece('-'),
-						new Piece('.'), new Piece('-'), new Piece('.'),
-						new Piece('-'), new Piece('.') },
+				{ new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.') },
+				{ new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.') },
+				{ new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.') },
+				{  new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.'), new Piece('.'),
+						new Piece('.'), new Piece('.') },
 				{ new Piece('P'), new Piece('P'), new Piece('P'),
 						new Piece('P'), new Piece('P'), new Piece('P'),
 						new Piece('P'), new Piece('P') },
