@@ -558,8 +558,10 @@ public class Board {
 				return true;
 			if(horizontalDiff == 0 && dest.isEmpty())
 				return true;
-		} else if (verticalDiff == -2 && source.y == 6 && horizontalDiff == 0 && dest.isEmpty())
-			return true;
+		} else if (verticalDiff == -2 && source.y == 6 && horizontalDiff == 0){
+			if(dest.isEmpty() && getPieceAt(source.x, source.y - 1).isEmpty())
+				return true;
+		}
 
 //		System.out.println("invalid white pawn move");
 		return false;
@@ -574,8 +576,10 @@ public class Board {
 				return true;
 			if(horizontalDiff == 0 && dest.isEmpty())
 				return true;
-		} else if (verticalDiff == 2 && source.y == 1 && horizontalDiff == 0 && dest.isEmpty())
-			return true;
+		} else if (verticalDiff == 2 && source.y == 1 && horizontalDiff == 0){
+			if(dest.isEmpty() && getPieceAt(source.x, source.y + 1).isEmpty())
+				return true;
+		}
 //		System.out.println("invalid black pawn move");
 		return false;
 	}
