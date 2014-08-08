@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -16,7 +18,7 @@ public class BoardGUI extends Thread implements MouseListener {
 	private static final String COLS = "ABCDEFGH";
 
 	private String[][] BoardPosition = new String[8][8];
-	
+
 	private ImageIcon emptyIcon;
 	private Board board;
 
@@ -29,11 +31,11 @@ public class BoardGUI extends Thread implements MouseListener {
 	@SuppressWarnings("unused")
 	protected ImageIcon createImageIcon(String piece, String description) {
 		String path;
-		if(Main.isRohan)	
+		if (Main.isRohan)
 			path = System.getProperty("user.dir") + "/assets/" + piece;
 		else
 			path = System.getProperty("user.dir") + "/src/assets/" + piece;
-		
+
 		String imgURL = path;
 		if (imgURL != null) {
 			return new ImageIcon(path, description);
@@ -43,22 +45,21 @@ public class BoardGUI extends Thread implements MouseListener {
 		}
 	}
 
-	public void editBoard(int SX, int SY, int DX, int DY){
+	public void editBoard(int SX, int SY, int DX, int DY) {
 		System.out.println("in editBoard");
-		//i = 7-i;
-		System.out.printf("x : %d\t y : %d\t dx : %d\t dy : %d\n", SX, SY,DX,DY);
-		//chessBoardSquares[destX][destY].setIcon(chessBoardSquares[sourceX][sourceY].getIcon());
-		//chessBoardSquares[sourceX][sourceY].setIcon(emptyIcon);
-		
-			//board.makeMove(source, dest);
-			chessBoardSquares[7-DY][DX].setIcon(chessBoardSquares[7-SY][SX]
-					.getIcon());
-			chessBoardSquares[7-SY][SX].setIcon(emptyIcon);
-			
-		
-		
+		// i = 7-i;
+		System.out.printf("x : %d\t y : %d\t dx : %d\t dy : %d\n", SX, SY, DX,
+				DY);
+		// chessBoardSquares[destX][destY].setIcon(chessBoardSquares[sourceX][sourceY].getIcon());
+		// chessBoardSquares[sourceX][sourceY].setIcon(emptyIcon);
+
+		// board.makeMove(source, dest);
+		chessBoardSquares[7 - DY][DX].setIcon(chessBoardSquares[7 - SY][SX]
+				.getIcon());
+		chessBoardSquares[7 - SY][SX].setIcon(emptyIcon);
+
 	}
-	
+
 	public final void initializeGui() {
 		// set up the main GUI
 		gui.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,7 +70,7 @@ public class BoardGUI extends Thread implements MouseListener {
 		chessBoard = new JPanel(new GridLayout(0, 9));
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
-
+		
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
@@ -165,20 +166,36 @@ public class BoardGUI extends Thread implements MouseListener {
 		return gui;
 	}
 
+	public Image toImage(ImageIcon icon){
+		
+		BufferedImage bi = new BufferedImage(
+			    icon.getIconWidth(),
+			    icon.getIconHeight(),
+			    BufferedImage.TYPE_INT_RGB);
+			Graphics g = bi.createGraphics();
+			// paint the Icon to the BufferedImage.
+			icon.paintIcon(null, g, 0,0);
+			g.dispose();
+		
+		return bi;
+		
+	}
+
 	public void run() {
 		BoardGUI cb = this;
-		
+
 		JFrame f = new JFrame("Chess");
 		f.add(cb.getGui());
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLocationByPlatform(true);
+		f.setIconImage(toImage(createImageIcon("1_knight.png", "Icon")));
 		f.pack();
 		f.setMinimumSize(f.getSize());
 		f.setVisible(true);
 	}
 
 	public void mousePressed(MouseEvent e) {
-		
+
 	}
 
 	private boolean noneSelected = true;
@@ -187,42 +204,53 @@ public class BoardGUI extends Thread implements MouseListener {
 
 	public void mouseReleased(MouseEvent e) {
 
-		//System.out.println("Mouse released; # of clicks: " + e.getClickCount());
+		// System.out.println("Mouse released; # of clicks: " +
+		// e.getClickCount());
 		JButton button = (JButton) e.getComponent();
 		int i = 0;
 		int j = 0;
 		outerloop: for (i = 0; i < 8; i++) {
 			for (j = 0; j < 8; j++) {
 				if (chessBoardSquares[i][j] == button) {
-					//System.out.println("[" + i + ", " + j + "] Current Piece: "
-						//	+ button.getIcon());
+					// System.out.println("[" + i + ", " + j +
+					// "] Current Piece: "
+					// + button.getIcon());
 					break outerloop;
 				}
 			}
 		}
 		if (noneSelected) {
-			if(!button.getIcon().toString().equalsIgnoreCase(emptyIcon.toString())){
-				xCord = i;
-				yCord = j;
-				button.setBorder(new LineBorder(Color.RED));
-				noneSelected = !noneSelected;
+			if (!button.getIcon().toString().equalsIgnoreCase(emptyIcon.toString())) {
+				int color = 0;
+				if(button.getIcon().toString().toLowerCase().contains("white")){
+					color = 1;
+				}
+				else{
+					color = 2;
+				}
+				if(color != Main.botColor){
+					xCord = i;
+					yCord = j;
+					button.setBorder(new LineBorder(Color.RED));
+					noneSelected = !noneSelected;
+				}
 			}
 		} else if (!noneSelected) {
 			if ((i == xCord && j == yCord)) {
 				chessBoardSquares[xCord][yCord].setBorder(null);
-			} 
-			
+			}
+
 			else {
-				
-				Piece source = board.getPieceAt(yCord, 7-xCord);
-				//source.printInfo("source");
-				Piece dest = board.getPieceAt(j, 7-i);
-				//dest.printInfo("dest");
-				
-				if(board.isValidMove(source, dest)){
+
+				Piece source = board.getPieceAt(yCord, 7 - xCord);
+				// source.printInfo("source");
+				Piece dest = board.getPieceAt(j, 7 - i);
+				// dest.printInfo("dest");
+
+				if (board.isValidMove(source, dest)) {
 					board.makeMove(source, dest);
-					chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord]
-							.getIcon());
+					chessBoardSquares[i][j]
+							.setIcon(chessBoardSquares[xCord][yCord].getIcon());
 					chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
 					Main.bot.move(board);
 				}
