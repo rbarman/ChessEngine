@@ -13,11 +13,19 @@ public class Main {
 	static int depth;
 	static ArrayList<OpeningLine> openingLines;
 	static BoardGUI bGUI;
+	static boolean isRohan;
+	
 	public static void main(String[] args) {
 
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
 
+		System.out.println("Rohan?");
+		if(scan.next().equalsIgnoreCase("y"))
+			isRohan = true;
+		else
+			isRohan = false;
+		
 		System.out.println("BotColor: "); 
 		botColor = scan.nextInt();
 		System.out.println("Depth: ");
@@ -25,8 +33,6 @@ public class Main {
 		System.out.printf("botColor : %d \t depth : %d\n", botColor, depth);
 		fillBook();
 
-		
-		
 		b = new Board();
 		b.setDefaultBoard();
 		b.mapLocations();		
@@ -56,7 +62,11 @@ public class Main {
 		openingLines = new ArrayList<>();
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/Openings.txt")); //dynamically finds openings.txt
+			 //dynamically finds openings.txt
+			if(isRohan)
+				reader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Openings.txt")); 
+			else
+				reader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/Openings.txt"));
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

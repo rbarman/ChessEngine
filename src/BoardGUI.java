@@ -28,7 +28,12 @@ public class BoardGUI extends Thread implements MouseListener {
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	@SuppressWarnings("unused")
 	protected ImageIcon createImageIcon(String piece, String description) {
-		String path = System.getProperty("user.dir") + "/src/assets/" + piece;
+		String path;
+		if(Main.isRohan)	
+			path = System.getProperty("user.dir") + "/assets/" + piece;
+		else
+			path = System.getProperty("user.dir") + "/src/assets/" + piece;
+		
 		String imgURL = path;
 		if (imgURL != null) {
 			return new ImageIcon(path, description);
