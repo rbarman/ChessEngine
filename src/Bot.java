@@ -47,7 +47,6 @@ public class Bot {
 			MovePair e2e4 = new MovePair(b.getPieceAt("e2"), b.getPieceAt("e4"));
 			b.makeMove(e2e4.source, e2e4.dest);
 			boardGUI.editBoard(e2e4.source.x, e2e4.source.y, e2e4.dest.x, e2e4.dest.y);
-			b.playedMoveList.add(e2e4);
 			e2e4.printPair("BOT will move");
 		}
 		else if(b.moveCount == 1 && color == 2) {
@@ -56,7 +55,6 @@ public class Bot {
 			MovePair e7e5 = new MovePair(b.getPieceAt("e7"), b.getPieceAt("e5"));
 			b.makeMove(e7e5.source, e7e5.dest);
 			boardGUI.editBoard(e7e5.source.x, e7e5.source.y, e7e5.dest.x, e7e5.dest.y);
-			b.playedMoveList.add(e7e5);
 			e7e5.printPair("BOT will move");
 		}
 		else  {
@@ -86,7 +84,6 @@ public class Bot {
 					Piece dest = b.getPieceAt(nextMove.substring(2,4));
 					MovePair nextOpeningMove = new MovePair(source, dest);
 					nextOpeningMove.printPair("opening move -> will play...");
-					b.playedMoveList.add(nextOpeningMove);
 					b.makeMove(source, dest);
 					return;
 				}

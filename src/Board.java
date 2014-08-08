@@ -752,9 +752,9 @@ public class Board {
 					contents[dest.y][dest.x + 1].hasMoved = true;
 				}
 			}
-//			printBoardContents();
 			turn = 3 - turn;
 			moveCount++;
+			playedMoveList.add(new MovePair(source, dest));
 		}
 		else { // king is in check, so put contents back to prevBoardState.
 			System.out.println("king checked");

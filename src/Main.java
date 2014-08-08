@@ -11,7 +11,7 @@ public class Main {
 	static Bot bot;
 	static int botColor;
 	static int depth;
-	static ArrayList<OpeningLine> openingLines;
+	public static ArrayList<OpeningLine> openingLines;
 	static BoardGUI bGUI;
 	public static boolean isRohan;
 	
@@ -38,13 +38,10 @@ public class Main {
 		b.mapLocations();		
 		b.printBoardContents();
 		
-//		bGUI = new BoardGUI(b);
-	
-//		bGUI.start();
+		bGUI = new BoardGUI(b);
+		bGUI.start();
 		
-		
-		
-		bot = new Bot(botColor, depth, openingLines, bGUI);
+		bot = new Bot(botColor, depth, bGUI);
 		
 		// Enter in commands. 
 		while(true) {
@@ -153,10 +150,9 @@ public class Main {
 				String p2Coordinate = command.split(" ")[2];
 				Piece p2 = b.getPieceAt(p2Coordinate);
 
-				if(b.isValidMove(p1, p2)) {
+				if(b.isValidMove(p1, p2)) 
 					b.makeMove(p1, p2);
-					b.playedMoveList.add(new MovePair(p1,p2));
-				}
+				
 				b.printBoardContents();
 			}
 			// valid P1 P2
@@ -217,27 +213,27 @@ public class Main {
 			else if(command.contains("material")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, bGUI).getMaterialScore(b));
 				else
-					System.out.printf("material score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getMaterialScore(b));
+					System.out.printf("material score : %d\n", new Bot(ccolor,depth, bGUI).getMaterialScore(b));
 			}
 			// attack s
 				// prints attack score of s, "attack 1"
 			else if(command.contains("attack")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, bGUI).getAttackScore(b));
 				else
-					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getAttackScore(b));
+					System.out.printf("attack score : %d\n", new Bot(ccolor,depth, bGUI).getAttackScore(b));
 			}
 			// defense s
 				// prints defense score of s, "defense 1"
 			else if(command.contains("defense")) {
 				int ccolor = Integer.parseInt(command.split(" ")[1]);
 				if(ccolor == 1)
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, bGUI).getDefenseScore(b));
 				else
-					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, openingLines, bGUI).getDefenseScore(b));
+					System.out.printf("defense score : %d\n", new Bot(ccolor,depth, bGUI).getDefenseScore(b));
 			}
 			
 			// minimax
@@ -279,7 +275,7 @@ public class Main {
 				MovePair randomMove = mvs.get(randInt);
 				b.makeMove(randomMove.source, randomMove.dest);
 				b.printBoardContents();
-				b.playedMoveList.add(new MovePair(randomMove.source,randomMove.dest));
+//				b.playedMoveList.add(new MovePair(randomMove.source,randomMove.dest));
 			}
 			// P defended by
 				// prints all Pieces that defend P. 
