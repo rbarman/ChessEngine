@@ -85,6 +85,9 @@ public class Bot {
 					MovePair nextOpeningMove = new MovePair(source, dest);
 					nextOpeningMove.printPair("opening move -> will play...");
 					b.makeMove(source, dest);
+					
+					boardGUI.editBoard(source.x, source.y, dest.x, dest.y);
+
 					return;
 				}
 			}
