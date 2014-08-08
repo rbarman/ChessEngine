@@ -13,7 +13,7 @@ public class Main {
 	static int depth;
 	static ArrayList<OpeningLine> openingLines;
 	static BoardGUI bGUI;
-	static boolean isRohan;
+	public static boolean isRohan;
 	
 	public static void main(String[] args) {
 
