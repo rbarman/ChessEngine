@@ -393,7 +393,7 @@ public class Board {
 			// if the king can not move to safety then possibly the same colored pieces can move 
 			// in such a way to avoid the king from being in check. 
 				// sudo version of makeMove(), check if in check.
-			Piece[][] prevBoardState = new Piece[9][9];
+			Piece[][] prevBoardState = new Piece[8][8];
 			for(int i = 0; i <contents.length; i++)
 				  for(int j=0; j<contents[i].length; j++)
 					  prevBoardState[i][j]=contents[i][j];
@@ -651,7 +651,7 @@ public class Board {
 				System.out.println("king side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
-				contents[7][8] = new Piece('.');
+				contents[7][7] = new Piece('.');
 				contents[7][6] = new Piece('R');
 			}
 			else if(hDiff == -2) {
@@ -697,36 +697,20 @@ public class Board {
 		mapLocations();
 	}
 	
-	/**
-	 * @param source : Piece that will move
-	 * @param dest : Piece that source will move to 
-	 * Source is moved to Dest on Board.contents as long as player is not put in check
-	 */
-	void makeMove(Piece source, Piece dest) {
-		
+	boolean doesMoveLeadToCheck(Piece source, Piece dest){
 		Piece[][] prevBoardState = new Piece[8][8];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
 				  prevBoardState[i][j]=contents[i][j];
-		
-//		if(isCheckMated()){
-//			System.out.println("king is checkmated!");
-//			System.exit(0);
-//		}
 
-		int kingCastledFlag = 0;
 		if(source.isKing() && inDebugMode == false) {
-				
-			if(kingCanCastle(source, dest))	{
-				System.out.println("will castle the king....");
+			if(kingCanCastle(source, dest))	
 				castleKing(source, dest);
-				kingCastledFlag = 1;
-			}
 		}	
 		
-		else if(source.isPawn() && pawnCanPromote(source)) {
+		else if(source.isPawn() && pawnCanPromote(source)) 
 			promotePawn(source, dest);
-		}
+		
 		else {
 			// other general move, not castle or pawn promotion.
 			Piece tempSource = new Piece(source.name);
@@ -735,16 +719,67 @@ public class Board {
 			contents[source.y][source.x] = new Piece('.');
 		}
 		
-		if(inDebugMode == true) {
-			mapLocations();
-			return;
-		}
-		
-		if(!isChecked()) { 
-			contents[dest.y][dest.x].hasMoved = true;
+		if(isChecked()){
+			for(int i=0; i<prevBoardState.length; i++)
+				  for(int j=0; j<prevBoardState[i].length; j++)
+					  contents[i][j]=prevBoardState[i][j];
 			
+			mapLocations();
+			return true;
+		}
+		else {
+			for(int i=0; i<prevBoardState.length; i++)
+				  for(int j=0; j<prevBoardState[i].length; j++)
+					  contents[i][j]=prevBoardState[i][j];
+			
+			mapLocations();
+			return false;
+		}	
+	}
+	
+	
+	/**
+	 * @param source : Piece that will move
+	 * @param dest : Piece that source will move to 
+	 * Source is moved to Dest on Board.contents as long as player is not put in check
+	 */
+	void makeMove(Piece source, Piece dest) {
+		
+		if(doesMoveLeadToCheck(source, dest)) {
+			// do nothing.
+		}
+		else {
+		
+			int kingCastledFlag = 0;
+			if(source.isKing() && inDebugMode == false) {
+					
+				if(kingCanCastle(source, dest))	{
+	//				System.out.println("will castle the king....");
+					castleKing(source, dest);
+					kingCastledFlag = 1;
+				}
+			}	
+			
+			else if(source.isPawn() && pawnCanPromote(source)) {
+				promotePawn(source, dest);
+			}
+			else {
+				// other general move, not castle or pawn promotion.
+				Piece tempSource = new Piece(source.name);
+				// tempSource magically works. -> had a 'massive' bug without it.... why?
+				contents[dest.y][dest.x] = tempSource;
+				contents[source.y][source.x] = new Piece('.');
+			}
+			
+			if(inDebugMode == true) {
+				mapLocations();
+				return;
+			}
+			
+			contents[dest.y][dest.x].hasMoved = true;
+				
 			if(kingCastledFlag == 1) {
-				System.out.println("kingCastledFlag == 1");
+	//			System.out.println("kingCastledFlag == 1");
 				if(contents[dest.y][dest.x - 1].isRook()) {
 					contents[dest.y][dest.x - 1].hasMoved = true;
 				}
@@ -755,19 +790,9 @@ public class Board {
 			turn = 3 - turn;
 			moveCount++;
 			playedMoveList.add(new MovePair(source, dest));
-		}
-		else { // king is in check, so put contents back to prevBoardState.
-			System.out.println("king checked");
-			
-			for(int i=0; i<prevBoardState.length; i++)
-				  for(int j=0; j<prevBoardState[i].length; j++)
-					  contents[i][j]=prevBoardState[i][j];
-			
 			mapLocations();
-//			printBoardContents();
 		}
-		mapLocations();
-	}		
+	}
 
 	/**
 	 * @param str : Algebraic notation. "c1" "c2" etc

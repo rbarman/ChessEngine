@@ -247,7 +247,7 @@ public class BoardGUI extends Thread implements MouseListener {
 				Piece dest = board.getPieceAt(j, 7 - i);
 				// dest.printInfo("dest");
 
-				if (board.isValidMove(source, dest)) {
+				if (board.isValidMove(source, dest) && !board.doesMoveLeadToCheck(source, dest)) {
 					board.makeMove(source, dest);
 					chessBoardSquares[i][j]
 							.setIcon(chessBoardSquares[xCord][yCord].getIcon());
