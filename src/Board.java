@@ -697,6 +697,10 @@ public class Board {
 	}
 	
 	boolean doesMoveLeadToCheck(Piece source, Piece dest){
+		
+		if(inDebugMode)
+			return false;
+		
 		Piece[][] prevBoardState = new Piece[8][8];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
@@ -744,56 +748,40 @@ public class Board {
 	 * specialMove indicates if we have just castled (c), promoted a pawn (p) or some other move (d)
 	 */
 	char makeMove(Piece source, Piece dest) {
+
+		char specialMove = 'd';
 		
-		char specialMove = 'd'; 
-		
-		if(doesMoveLeadToCheck(source, dest)) {
-			// do nothing.
+		if (source.isKing() && kingCanCastle(source, dest)) {
+			// System.out.println("will castle the king....");
+			castleKing(source, dest);
+			specialMove = 'c';
+
+			// the rook should be registered as having moved.
+			if (contents[dest.y][dest.x - 1].isRook())
+				contents[dest.y][dest.x - 1].hasMoved = true;
+			else if (contents[dest.y][dest.x + 1].isRook())
+				contents[dest.y][dest.x + 1].hasMoved = true;
 		}
-		else {
-		
-			int kingCastledFlag = 0;
-			
-			if(source.isKing() && kingCanCastle(source, dest)) {	
-	//				System.out.println("will castle the king....");
-					castleKing(source, dest);
-					kingCastledFlag = 1;
-					specialMove = 'c';
-			}	
-			
-			else if(source.isPawn() && pawnCanPromote(source)) {
-				promotePawn(source, dest);
-				specialMove = 'p';
-			}
-			else {
-				// other general move, not castle or pawn promotion.
-				Piece tempSource = new Piece(source.name);
-				// tempSource magically works. -> had a 'massive' bug without it.... why?
-				contents[dest.y][dest.x] = tempSource;
-				contents[source.y][source.x] = new Piece('.');
-			}
-			
-			if(inDebugMode == true) {
-				mapLocations();
-				return 'd';
-			}
-			
-			contents[dest.y][dest.x].hasMoved = true;
-				
-			if(kingCastledFlag == 1) {
-	//			System.out.println("kingCastledFlag == 1");
-				if(contents[dest.y][dest.x - 1].isRook()) {
-					contents[dest.y][dest.x - 1].hasMoved = true;
-				}
-				else if(contents[dest.y][dest.x + 1].isRook()) {
-					contents[dest.y][dest.x + 1].hasMoved = true;
-				}
-			}
-			turn = 3 - turn;
-			moveCount++;
-			playedMoveList.add(new MovePair(source, dest));
-			mapLocations();
+
+		else if (source.isPawn() && pawnCanPromote(source)) {
+			promotePawn(source, dest);
+			specialMove = 'p';
+		} else {
+			// other general move, not castle or pawn promotion.
+			Piece tempSource = new Piece(source.name);
+			// tempSource magically works. -> had a 'massive' bug without it....
+			// why?
+			contents[dest.y][dest.x] = tempSource;
+			contents[source.y][source.x] = new Piece('.');
 		}
+
+		// Source must be said to have moved
+		contents[dest.y][dest.x].hasMoved = true;
+
+		turn = 3 - turn;
+		moveCount++;
+		playedMoveList.add(new MovePair(source, dest));
+		mapLocations();
 		return specialMove;
 	}
 
@@ -925,7 +913,7 @@ public class Board {
 		for(int i = 0; i < contents.length;i++){
 			for(int j = 0; j < contents[i].length; j++) {
 				Piece dest = getPieceAt(i, j);
-				if(isValidMove(source, dest)) 
+				if(isValidMove(source, dest) && !doesMoveLeadToCheck(source, dest)) 
 					availableMoves.add(dest);				
 			}	
 		}

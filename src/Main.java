@@ -149,12 +149,12 @@ public class Main {
 				// moves P1 to P2 if it is valid to move P1 to P2 
 			else if(command.contains("move")) {
 				String p1Coordinate = command.split(" ")[1];
-				Piece p1 = b.getPieceAt(p1Coordinate);
+				Piece source = b.getPieceAt(p1Coordinate);
 				String p2Coordinate = command.split(" ")[2];
-				Piece p2 = b.getPieceAt(p2Coordinate);
+				Piece dest = b.getPieceAt(p2Coordinate);
 
-				if(b.isValidMove(p1, p2)) 
-					b.makeMove(p1, p2);
+				if(b.isValidMove(source, dest) && !b.doesMoveLeadToCheck(source, dest)) 
+					b.makeMove(source, dest);
 				
 				b.printBoardContents();
 			}
