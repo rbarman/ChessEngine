@@ -422,12 +422,14 @@ public class Board {
 		}		
 	}
 	
+	
 	/**
 	 * @return if King Piece based on current Board.turn value is Checked. 
 	 * Could be re-factored to to have int color paramamter to not rely on Board.turn value. 
 	 */
 	boolean isChecked() {
 		Piece king = getKing();
+		king.printInfo("in isChcked");
 		int oppColor = 3 - king.side;
 		
 		if(isAttacked(king,oppColor)) 
@@ -696,20 +698,28 @@ public class Board {
 		mapLocations();
 	}
 	
+	/**
+	 * @param source
+	 * @param dest
+	 * @return if moving Source to Dest will result in check
+	 * Temporarily plays the move on Board.contents and checks if current King is checked.
+	 */
+	//:TODO there is a slight inefficiency
+	// We store this.contents into array, play move on this.contents, and restore this.contents to previous array.
+	// Rather find a way to cleanly create a new Board and play the move on new Board().contents. This way we do not have to restore this.contents. 
 	boolean doesMoveLeadToCheck(Piece source, Piece dest){
-		
 		if(inDebugMode)
 			return false;
 		
+		// prevBoardState holds what is currently on this.contents
 		Piece[][] prevBoardState = new Piece[8][8];
 		for(int i = 0; i <contents.length; i++)
 			  for(int j=0; j<contents[i].length; j++)
 				  prevBoardState[i][j]=contents[i][j];
 
-		if(source.isKing() && inDebugMode == false) {
-			if(kingCanCastle(source, dest))	
-				castleKing(source, dest);
-		}	
+		// play the move on this.contents
+		if(source.isKing() && kingCanCastle(source, dest)) 
+			castleKing(source, dest);	
 		
 		else if(source.isPawn() && pawnCanPromote(source)) 
 			promotePawn(source, dest);
@@ -717,27 +727,23 @@ public class Board {
 		else {
 			// other general move, not castle or pawn promotion.
 			Piece tempSource = new Piece(source.name);
-			// tempSource magically works. -> had a 'massive' bug without it.... why?
 			contents[dest.y][dest.x] = tempSource;
 			contents[source.y][source.x] = new Piece('.');
 		}
 		
-		if(isChecked()){
-			for(int i=0; i<prevBoardState.length; i++)
-				  for(int j=0; j<prevBoardState[i].length; j++)
-					  contents[i][j]=prevBoardState[i][j];
-			
-			mapLocations();
-			return true;
-		}
-		else {
-			for(int i=0; i<prevBoardState.length; i++)
-				  for(int j=0; j<prevBoardState[i].length; j++)
-					  contents[i][j]=prevBoardState[i][j];
-			
-			mapLocations();
-			return false;
-		}	
+		// check if current king on this.contents is placed in check from making move.
+		boolean leadsToCheck = false;
+		if(isChecked())
+			leadsToCheck = true;
+		System.out.println(leadsToCheck);
+		
+		// reset this.contents to prevBoardState (what it was initially)
+		for(int i=0; i<prevBoardState.length; i++)
+			  for(int j=0; j<prevBoardState[i].length; j++)
+				  contents[i][j]=prevBoardState[i][j];
+		
+		mapLocations();
+		return leadsToCheck;
 	}
 	
 	/**
