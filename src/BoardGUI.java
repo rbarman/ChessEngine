@@ -20,8 +20,12 @@ public class BoardGUI extends Thread implements MouseListener {
 	private String[][] BoardPosition = new String[8][8];
 
 	private ImageIcon emptyIcon;
+	private ImageIcon blackQueen;
+	private ImageIcon whiteQueen;
 	private Board board;
 
+	public boolean playingWithBot = false;
+	
 	BoardGUI(Board board) {
 		this.board = board;
 		initializeGui();
@@ -103,6 +107,7 @@ public class BoardGUI extends Thread implements MouseListener {
 					} else if (j == 4) {
 						icon = createImageIcon("0_queen.png",
 								temp = "White_Queen");
+						whiteQueen = icon;
 					} else if (j == 3) {
 						icon = createImageIcon("0_king.png",
 								temp = "White_King");
@@ -120,6 +125,7 @@ public class BoardGUI extends Thread implements MouseListener {
 					} else if (j == 4) {
 						icon = createImageIcon("1_queen.png",
 								temp = "Black_Queen");
+						blackQueen = icon;
 					} else if (j == 3) {
 						icon = createImageIcon("1_king.png",
 								temp = "Black_King");
@@ -218,7 +224,12 @@ public class BoardGUI extends Thread implements MouseListener {
 			}
 
 		} else if (specialMove == 'p') {// pawn reaches end
-			
+			if(i == 7){
+				chessBoardSquares[i][j].setIcon(whiteQueen);
+			}
+			else if (i == 0){
+				chessBoardSquares[i][j].setIcon(blackQueen);
+			}
 		}
 	}
 
@@ -249,7 +260,7 @@ public class BoardGUI extends Thread implements MouseListener {
 				} else {
 					color = 2;
 				}
-				if (color != Main.botColor) {
+				if (color != Main.botColor || !playingWithBot) {
 					xCord = i;
 					yCord = j;
 					button.setBorder(new LineBorder(Color.RED));
@@ -266,7 +277,9 @@ public class BoardGUI extends Thread implements MouseListener {
 						&& !board.doesMoveLeadToCheck(source, dest)) {
 					char specialMove = board.makeMove(source, dest);
 					movePiece(i, j, xCord, yCord, specialMove);
-					Main.bot.move(board);
+					if(playingWithBot){
+						Main.bot.move(board);
+					}
 				}
 				chessBoardSquares[xCord][yCord].setBorder(null);
 			}

@@ -43,7 +43,7 @@ public class Main {
 		
 		bot = new Bot(botColor, depth, bGUI);
 		
-		if(bot.color == 1)
+		if(bot.color == 1 && bGUI.playingWithBot)
 			bot.move(b);
 		
 		// Enter in commands. 
