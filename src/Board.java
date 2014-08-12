@@ -737,13 +737,17 @@ public class Board {
 		}	
 	}
 	
-	
 	/**
 	 * @param source : Piece that will move
-	 * @param dest : Piece that source will move to 
-	 * Source is moved to Dest on Board.contents as long as player is not put in check
+	 * @param dest : Piece that source will move to
+	 *  Source is moved to Dest on Board.contents as long as player is not put in check 
+	 * @return specialMove
+	 * specialMove indicates if we have just castled (c), promoted a pawn (p) or some other move (d)
 	 */
-	void makeMove(Piece source, Piece dest) {
+	char makeMove(Piece source, Piece dest) {
+		
+		char specialMove = 'd'; 
+		
 		
 		if(doesMoveLeadToCheck(source, dest)) {
 			// do nothing.
@@ -757,11 +761,13 @@ public class Board {
 	//				System.out.println("will castle the king....");
 					castleKing(source, dest);
 					kingCastledFlag = 1;
+					specialMove = 'c';
 				}
 			}	
 			
 			else if(source.isPawn() && pawnCanPromote(source)) {
 				promotePawn(source, dest);
+				specialMove = 'p';
 			}
 			else {
 				// other general move, not castle or pawn promotion.
@@ -773,7 +779,7 @@ public class Board {
 			
 			if(inDebugMode == true) {
 				mapLocations();
-				return;
+				return 'd';
 			}
 			
 			contents[dest.y][dest.x].hasMoved = true;
@@ -792,6 +798,7 @@ public class Board {
 			playedMoveList.add(new MovePair(source, dest));
 			mapLocations();
 		}
+		return specialMove;
 	}
 
 	/**
