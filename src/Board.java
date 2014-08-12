@@ -116,7 +116,7 @@ public class Board {
 					return contents[i][j];
 			}
 		}
-		System.out.println("unexpeted in getting king! Turn was : " + turn );
+		//System.out.println("unexpeted in getting king! Turn was : " + turn );
 		// should not get here....
 		return new Piece('.');
 	}
@@ -161,7 +161,7 @@ public class Board {
 			return false;
 		for(Piece a : getPiecesOfColor(oppColor))
 			if(isValidMove(a, p)) {
-				System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
+				//System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
 				return true;
 			}
 		return false;
@@ -640,7 +640,7 @@ public class Board {
 	 * King will castle on Board.contents
 	 */
 	void castleKing(Piece king, Piece dest) {
-		System.out.println("in castleKing");
+		//System.out.println("in castleKing");
 //		king.printInfo();
 //		System.out.printf("dest \t");
 //		dest.printInfo();
@@ -648,7 +648,7 @@ public class Board {
 		if(king.side == 1) {
 			if(hDiff == 2) {
 				// king side castle
-				System.out.println("king side castle");
+				//System.out.println("king side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[7][7] = new Piece('.');
@@ -656,7 +656,7 @@ public class Board {
 			}
 			else if(hDiff == -2) {
 				// queen side castle
-				System.out.println("queen side castle");
+				//System.out.println("queen side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[7][4] = new Piece('R');
@@ -665,18 +665,18 @@ public class Board {
 		}
 		else if(king.side == 2) {
 			if(hDiff == 2) {
-				System.out.println("king side castle");
+				//System.out.println("king side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[0][6] = new Piece('r');
 				contents[0][7] = new Piece('.');
 			}
 			else if(hDiff == -2) {
-				System.out.println("queen side castle");
+				//System.out.println("queen side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
-				contents[0][4] = new Piece('R');
-				contents[0][1] = new Piece('.');
+				contents[0][3] = new Piece('r');
+				contents[0][0] = new Piece('.');
 			}
 		}
 		mapLocations();
@@ -688,7 +688,7 @@ public class Board {
 	 * pawn will be promoted to Queen on Board.contents
 	 */
 	void promotePawn(Piece pawn, Piece dest) {
-//		System.out.println("in promotePawn");
+//		//System.out.println("in promotePawn");
 		if(pawn.side == 1) 
 			contents[dest.y][dest.x] = new Piece('Q');
 		else if(pawn.side == 2) 

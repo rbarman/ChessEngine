@@ -70,7 +70,7 @@ public class BoardGUI extends Thread implements MouseListener {
 		chessBoard = new JPanel(new GridLayout(0, 9));
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
-		
+
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
@@ -166,19 +166,17 @@ public class BoardGUI extends Thread implements MouseListener {
 		return gui;
 	}
 
-	public Image toImage(ImageIcon icon){
-		
-		BufferedImage bi = new BufferedImage(
-			    icon.getIconWidth(),
-			    icon.getIconHeight(),
-			    BufferedImage.TYPE_INT_RGB);
-			Graphics g = bi.createGraphics();
-			// paint the Icon to the BufferedImage.
-			icon.paintIcon(null, g, 0,0);
-			g.dispose();
-		
+	public Image toImage(ImageIcon icon) {
+
+		BufferedImage bi = new BufferedImage(icon.getIconWidth(),
+				icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics g = bi.createGraphics();
+		// paint the Icon to the BufferedImage.
+		icon.paintIcon(null, g, 0, 0);
+		g.dispose();
+
 		return bi;
-		
+
 	}
 
 	public void run() {
@@ -198,6 +196,32 @@ public class BoardGUI extends Thread implements MouseListener {
 
 	}
 
+	public void movePiece(int i, int j, int xCord, int yCord, char specialMove) {
+		chessBoardSquares[i][j].setIcon(chessBoardSquares[xCord][yCord]
+				.getIcon());
+		chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+		System.out.println("i:" + i + " j:" + j + " xCord:" + xCord + " yCord:"
+				+ yCord);
+
+		// =======Function ends if specialMove == d ==========
+		
+		if (specialMove == 'c') {// castle occurs
+
+			if (j == 6) {
+				chessBoardSquares[i][5].setIcon(chessBoardSquares[i][7]
+						.getIcon());
+				chessBoardSquares[i][7].setIcon(emptyIcon);
+			} else if (j == 2) {
+				chessBoardSquares[i][3].setIcon(chessBoardSquares[i][0]
+						.getIcon());
+				chessBoardSquares[i][0].setIcon(emptyIcon);
+			}
+
+		} else if (specialMove == 'p') {// pawn reaches end
+			
+		}
+	}
+
 	private boolean noneSelected = true;
 	private int xCord = 0;
 	private int yCord = 0;
@@ -212,23 +236,20 @@ public class BoardGUI extends Thread implements MouseListener {
 		outerloop: for (i = 0; i < 8; i++) {
 			for (j = 0; j < 8; j++) {
 				if (chessBoardSquares[i][j] == button) {
-					// System.out.println("[" + i + ", " + j +
-					// "] Current Piece: "
-					// + button.getIcon());
 					break outerloop;
 				}
 			}
 		}
 		if (noneSelected) {
-			if (!button.getIcon().toString().equalsIgnoreCase(emptyIcon.toString())) {
+			if (!button.getIcon().toString()
+					.equalsIgnoreCase(emptyIcon.toString())) {
 				int color = 0;
-				if(button.getIcon().toString().toLowerCase().contains("white")){
+				if (button.getIcon().toString().toLowerCase().contains("white")) {
 					color = 1;
-				}
-				else{
+				} else {
 					color = 2;
 				}
-				if(color != Main.botColor){
+				if (color != Main.botColor) {
 					xCord = i;
 					yCord = j;
 					button.setBorder(new LineBorder(Color.RED));
@@ -238,20 +259,13 @@ public class BoardGUI extends Thread implements MouseListener {
 		} else if (!noneSelected) {
 			if ((i == xCord && j == yCord)) {
 				chessBoardSquares[xCord][yCord].setBorder(null);
-			}
-
-			else {
-
+			} else {
 				Piece source = board.getPieceAt(yCord, 7 - xCord);
-				// source.printInfo("source");
 				Piece dest = board.getPieceAt(j, 7 - i);
-				// dest.printInfo("dest");
-
-				if (board.isValidMove(source, dest) && !board.doesMoveLeadToCheck(source, dest)) {
-					board.makeMove(source, dest);
-					chessBoardSquares[i][j]
-							.setIcon(chessBoardSquares[xCord][yCord].getIcon());
-					chessBoardSquares[xCord][yCord].setIcon(emptyIcon);
+				if (board.isValidMove(source, dest)
+						&& !board.doesMoveLeadToCheck(source, dest)) {
+					char specialMove = board.makeMove(source, dest);
+					movePiece(i, j, xCord, yCord, specialMove);
 					Main.bot.move(board);
 				}
 				chessBoardSquares[xCord][yCord].setBorder(null);

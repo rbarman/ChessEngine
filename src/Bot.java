@@ -70,14 +70,14 @@ public class Bot {
 					continue; // played more moves that stored for that Opening Line, continue to next Opening Line
 				
 				for(int i = 0; i < b.playedMoveList.size(); i++) {
-//					System.out.printf("o1 split vs playedMove : %s vs %s\n", olSplit[i], b.playedMoveList.get(i).simpleName());
+//					//System.out.printf("o1 split vs playedMove : %s vs %s\n", olSplit[i], b.playedMoveList.get(i).simpleName());
 					if(!olSplit[i].equalsIgnoreCase(b.playedMoveList.get(i).simpleName())) 
 						bs = true;
 				}
 				// if we can get past this for loop this means that there are matches with the current ol and b.playedMoveList.
 				// if olSplit is smaller than b.playedMoveList, then we can not use this opening line. 
 				if(!bs && olSplit.length > b.playedMoveList.size()) {
-					System.out.println("recognized : " + ol.name);
+					//System.out.println("recognized : " + ol.name);
 					
 					String nextMove = olSplit[b.playedMoveList.size()];
 					Piece source = b.getPieceAt(nextMove.substring(0, 2));
@@ -91,7 +91,7 @@ public class Bot {
 					return;
 				}
 			}
-			System.out.println("No Opening matches found 2!");
+			//System.out.println("No Opening matches found 2!");
 			inOpening = false;
 			alphaBetaMove(b);
 		}
@@ -150,12 +150,12 @@ public class Bot {
 				while(!attackerValues.isEmpty()) {
 					
 					if(defenderValues.isEmpty()) {
-						System.out.println("defenders.isEmpty()");
+						//System.out.println("defenders.isEmpty()");
 						// If we don't have any defenders, then we effectively lose P. 
 						defenseScore -= p.getValue();
 						// defenseScore decremented for every remaining attacker on P if P has 0 remaining defenders. 
 						for(int i = 1; i < attackers.size(); i++) {
-							System.out.println("\t decrementing DefenseScore");
+							//System.out.println("\t decrementing DefenseScore");
 							defenseScore--;
 						} 
 						attackerValues.remove(0); // attacker capture p. 
@@ -165,7 +165,7 @@ public class Bot {
 					// There is one attacker left with greater or equal value to P and we have defenders. 
 						// This is a neutral spot for defender. 
 					if(attackerValues.size() == 1 && (attackerValues.get(0) >= p.getValue()) && !defenderValues.isEmpty()) {
-						System.out.println("neutral spot");
+						//System.out.println("neutral spot");
 						attackerValues.remove(0); // attacker captures p 
 						defenderValues.remove(0); // defender captures attacker
 						break;
@@ -173,7 +173,7 @@ public class Bot {
 
 					if(defenderValues.get(0) > attackerValues.get(0)){
 						// value of our lowest defender is greater than value of lowest opp attacker, not good
-						System.out.println("\t\tdef val > att val, reducing def by " + p.getValue());
+						//System.out.println("\t\tdef val > att val, reducing def by " + p.getValue());
 						defenseScore -= p.getValue();
 						
 						attackerValues.remove(0); // attacker captures p
@@ -183,12 +183,12 @@ public class Bot {
 					attackerValues.remove(0); // attacker captures P if first iteration , else captures defender. 
 					defenderValues.remove(0); // defender captures attacker
 					
-					System.out.println("passed one trade iteration");
+					//System.out.println("passed one trade iteration");
 				}
 				// check when attackerValues is empty if we still have any defenders. 
 				if(attackerValues.isEmpty() && !defenderValues.isEmpty()) {
 					for(int i = 0; i < defenderValues.size(); i++) { 
-						System.out.println("\tstill have defenders, def++");
+						//System.out.println("\tstill have defenders, def++");
 						defenseScore++;
 					}
 				}	
@@ -229,7 +229,7 @@ public class Bot {
 			tab = "\t" + tab;
 
 		int boardScore = materialScore + defenseScore + attackScore;
-		System.out.printf("%sfinal : %d \tcbv :%d\tdS : %d \taS : %d\n",tab,boardScore,materialScore, defenseScore, attackScore);
+		//System.out.printf("%sfinal : %d \tcbv :%d\tdS : %d \taS : %d\n",tab,boardScore,materialScore, defenseScore, attackScore);
 		return boardScore;
 	}	
 
@@ -269,9 +269,9 @@ public class Bot {
 			temp.makeMove(mv.source, mv.dest); 
 			ScoredMovePair test = miniMax(depth, temp , mv,  false);
 			allPairs.add(test);
-			System.out.println("score = " + test.score);
+			//System.out.println("score = " + test.score);
 			// resets best if test has has a better score
-			System.out.printf("test.score %d vs best.score %d\n",test.score, best.score);
+			//System.out.printf("test.score %d vs best.score %d\n",test.score, best.score);
 			if(test.score >= best.score) {
 				best.score = test.score;
 				best.movePair = test.movePair;
@@ -326,7 +326,7 @@ public class Bot {
 				String tab = "";
 				for(int i = 0; i < this.depth - depth + 2; i++)
 					tab = "\t" + tab;
-				System.out.println(tab + "for Max, best score is " + best.score);
+				//System.out.println(tab + "for Max, best score is " + best.score);
 			}
 			return best;
 		}
@@ -345,7 +345,7 @@ public class Bot {
 				String tab = "";
 				for(int i = 0; i < this.depth - depth + 2; i++)
 					tab = "\t" + tab;
-				System.out.println(tab + "for Min, best score is " + best.score);
+				//System.out.println(tab + "for Min, best score is " + best.score);
 			}
 			return best;
 		}
@@ -378,7 +378,7 @@ public class Bot {
 			temp.makeMove(mv.source, mv.dest);
 			ScoredMovePair test = alphabeta(depth, temp, mv, -100, 100, false); //  alpha = - inf ?, beta = + inf ?
 			allPairs.add(test);
-			System.out.println("score = " + test.score);
+			//System.out.println("score = " + test.score);
 			// resets best if test has has a better score
 			if(test.score > best.score) { 
 				best.score = test.score;   

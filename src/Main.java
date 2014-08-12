@@ -43,6 +43,9 @@ public class Main {
 		
 		bot = new Bot(botColor, depth, bGUI);
 		
+		if(bot.color == 1)
+			bot.move(b);
+		
 		// Enter in commands. 
 		while(true) {
 			if(b.isCheckMated()) 

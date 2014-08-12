@@ -75,7 +75,7 @@ public class Piece {
 	 * "TAG >> P @ (1,2) with side : 1 moved : false"
 	 */
 	public void printInfo(String tag) {
-		System.out.printf("%s >> %s @ (%d,%d) %s with side : %d moved : %b\n",tag,this.name,this.x,this.y,this.getAlgebraic(),this.side,this.hasMoved);
+		//System.out.printf("%s >> %s @ (%d,%d) %s with side : %d moved : %b\n",tag,this.name,this.x,this.y,this.getAlgebraic(),this.side,this.hasMoved);
 	}
 	
 	/**

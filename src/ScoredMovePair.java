@@ -10,10 +10,10 @@ public class ScoredMovePair {
 	public int score;
 	
 	public void print(String tag) {
-		System.out.printf("%s >>  %s @ (%d,%d) %s PAIRED with %s @ (%d,%d) %s has score of %d\n",
-				tag, this.movePair.source.name, this.movePair.source.x, this.movePair.source.y,
-				this.movePair.source.getAlgebraic(),
-				this.movePair.dest.name, this.movePair.dest.x,this.movePair.dest.y,
-				this.movePair.dest.getAlgebraic(),this.score);	
+		//System.out.printf("%s >>  %s @ (%d,%d) %s PAIRED with %s @ (%d,%d) %s has score of %d\n",
+			//	tag, this.movePair.source.name, this.movePair.source.x, this.movePair.source.y,
+				//this.movePair.source.getAlgebraic(),
+				//this.movePair.dest.name, this.movePair.dest.x,this.movePair.dest.y,
+				//this.movePair.dest.getAlgebraic(),this.score);	
 		}
 }

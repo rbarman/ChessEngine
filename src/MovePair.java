@@ -32,9 +32,9 @@ public class MovePair {
 	 * Prints information about MovePair's source and dest.
 	 */
 	public void printPair(String tag) { 	
-		System.out.printf("%s  %s @ (%d,%d) %s PAIRED with %s @ (%d,%d) %s \n",
-				tag, this.source.name, this.source.x, this.source.y, this.source.getAlgebraic(),
-				this.dest.name, this.dest.x,this.dest.y, this.dest.getAlgebraic());
+		//System.out.printf("%s  %s @ (%d,%d) %s PAIRED with %s @ (%d,%d) %s \n",
+				//tag, this.source.name, this.source.x, this.source.y, this.source.getAlgebraic(),
+				//this.dest.name, this.dest.x,this.dest.y, this.dest.getAlgebraic());
 	}
 	
 	/**
