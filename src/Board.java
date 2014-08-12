@@ -504,7 +504,6 @@ public class Board {
 	}
 
 	boolean isValidKingMove(Piece king, Piece dest) {
-//		System.out.println("validating king move");
 		
 		int horizontalDiff = getHorizontalDiff(king, dest);
 		int verticalDiff = getVerticalDiff(king, dest);
@@ -748,21 +747,18 @@ public class Board {
 		
 		char specialMove = 'd'; 
 		
-		
 		if(doesMoveLeadToCheck(source, dest)) {
 			// do nothing.
 		}
 		else {
 		
 			int kingCastledFlag = 0;
-			if(source.isKing() && inDebugMode == false) {
-					
-				if(kingCanCastle(source, dest))	{
+			
+			if(source.isKing() && kingCanCastle(source, dest)) {	
 	//				System.out.println("will castle the king....");
 					castleKing(source, dest);
 					kingCastledFlag = 1;
 					specialMove = 'c';
-				}
 			}	
 			
 			else if(source.isPawn() && pawnCanPromote(source)) {
