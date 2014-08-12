@@ -112,11 +112,11 @@ public class Board {
 		
 		for(int i = 0; i < contents.length; i++) {
 			for(int j = 0; j < contents[i].length; j++) {
-				if(contents[i][j].name == flag)
+				if(contents[i][j].name == flag) 
 					return contents[i][j];
 			}
 		}
-		//System.out.println("unexpeted in getting king! Turn was : " + turn );
+		System.out.println("unexpeted in getting king! Turn was : " + turn );
 		// should not get here....
 		return new Piece('.');
 	}
@@ -648,31 +648,31 @@ public class Board {
 		if(king.side == 1) {
 			if(hDiff == 2) {
 				// king side castle
-				//System.out.println("king side castle");
+				System.out.println("white king side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[7][7] = new Piece('.');
-				contents[7][6] = new Piece('R');
+				contents[7][5] = new Piece('R');
 			}
 			else if(hDiff == -2) {
 				// queen side castle
-				//System.out.println("queen side castle");
+				System.out.println("white queen side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
-				contents[7][4] = new Piece('R');
-				contents[7][1] = new Piece('.');
+				contents[7][3] = new Piece('R');
+				contents[7][0] = new Piece('.');
 			}
 		}
 		else if(king.side == 2) {
 			if(hDiff == 2) {
-				//System.out.println("king side castle");
+				System.out.println("black king side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
-				contents[0][6] = new Piece('r');
+				contents[0][5] = new Piece('r');
 				contents[0][7] = new Piece('.');
 			}
 			else if(hDiff == -2) {
-				//System.out.println("queen side castle");
+				System.out.println("black queen side castle");
 				contents[dest.y][dest.x] = new Piece(king.name);
 				contents[king.y][king.x] = new Piece('.');
 				contents[0][3] = new Piece('r');
