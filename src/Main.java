@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+
+import javax.swing.UIManager;
 public class Main {
 	
 	static Board b;
@@ -37,6 +39,18 @@ public class Main {
 		b.setDefaultBoard();
 		b.mapLocations();		
 		b.printBoardContents();
+		
+		// Special condition to get the GUI properly working if on a MAC
+		String osName = System.getProperty("os.name").toLowerCase();
+		System.out.println(osName);
+		if (osName.contains("mac")) {
+			try {
+				UIManager.setLookAndFeel(UIManager
+						.getCrossPlatformLookAndFeelClassName());
+			} catch (Exception e) {
+				System.out.println("Error setting Java LAF: " + e);
+			}
+		}
 		
 		bGUI = new BoardGUI(b);
 		bGUI.start();
