@@ -62,10 +62,9 @@ public class Main {
 		
 		// Enter in commands. 
 		while(true) {
+			parseCommand(scan.nextLine());
 			if(b.isCheckMated()) 
-				return;
-			else
-				parseCommand(scan.nextLine());
+				break;
 		}
 	}
 

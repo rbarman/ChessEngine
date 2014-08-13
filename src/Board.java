@@ -161,7 +161,7 @@ public class Board {
 			return false;
 		for(Piece a : getPiecesOfColor(oppColor))
 			if(isValidMove(a, p)) {
-				//System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
+//				System.out.printf("%s @ (%d,%d) is attacked by %s @ (%d,%d)\n", p.name, p.x, p.y,a.name,a.x,a.y);
 				return true;
 			}
 		return false;
@@ -385,7 +385,7 @@ public class Board {
 			Piece king = getKing();
 			int oppColor = 3 - king.side;
 			// checks for squares that the king can move to to avoid being in check.
-				// if there is a safe square, king is not in checkmat, return false.
+				// if there is a safe square, king is not in checkmated, return false.
 			for(Piece p : getKingSurroundingPeces(king)) 
 				if(!isAttacked(p, oppColor))
 					return false;
@@ -417,6 +417,7 @@ public class Board {
 					}
 				}
 			}
+			System.out.println("game over");
 			king.printInfo("IS CHECKMATED!");
 			return true;	
 		}		
@@ -429,7 +430,6 @@ public class Board {
 	 */
 	boolean isChecked() {
 		Piece king = getKing();
-		king.printInfo("in isChcked");
 		int oppColor = 3 - king.side;
 		
 		if(isAttacked(king,oppColor)) 
@@ -735,7 +735,7 @@ public class Board {
 		boolean leadsToCheck = false;
 		if(isChecked())
 			leadsToCheck = true;
-		System.out.println(leadsToCheck);
+//		System.out.println(leadsToCheck);
 		
 		// reset this.contents to prevBoardState (what it was initially)
 		for(int i=0; i<prevBoardState.length; i++)
