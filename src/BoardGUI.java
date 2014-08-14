@@ -16,7 +16,7 @@ public class BoardGUI extends Thread implements MouseListener {
 	private JButton[][] chessBoardSquares = new JButton[8][8];
 	private JPanel chessBoard;
 	private static final String COLS = "ABCDEFGH";
-
+	protected JTextArea textArea;
 	private String[][] BoardPosition = new String[8][8];
 
 	private ImageIcon emptyIcon;
@@ -70,11 +70,10 @@ public class BoardGUI extends Thread implements MouseListener {
 		JToolBar tools = new JToolBar();
 		tools.setFloatable(false);
 		gui.add(tools, BorderLayout.PAGE_START);
-
+		
 		chessBoard = new JPanel(new GridLayout(0, 9));
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		gui.add(chessBoard);
-
 		// create the chess board squares
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
 		for (int i = chessBoardSquares.length - 1; i >= 0; i--) {
@@ -162,7 +161,21 @@ public class BoardGUI extends Thread implements MouseListener {
 				}
 			}
 		}
+		 
+		textArea = new JTextArea(40,15);
+        textArea.setEditable(false);
+        JPanel frame = new JPanel();
+        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        frame.add(scrollPane);
+        frame.setVisible(true);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chessBoard, frame);
+        gui.add(splitPane);
+     
+
 	}
+	public void updateMoveList(String text){
+		  textArea.append(text + '\n');
+	  }
 
 	public final JComponent getChessBoard() {
 		return chessBoard;
@@ -238,7 +251,7 @@ public class BoardGUI extends Thread implements MouseListener {
 	private int yCord = 0;
 
 	public void mouseReleased(MouseEvent e) {
-
+	
 		// System.out.println("Mouse released; # of clicks: " +
 		// e.getClickCount());
 		JButton button = (JButton) e.getComponent();
