@@ -173,8 +173,12 @@ public class BoardGUI extends Thread implements MouseListener {
      
 
 	}
-	public void updateMoveList(String text){
-		  textArea.append(text + '\n');
+	public void updateMoveList(){
+		
+		MovePair mp = board.playedMoveList.get(board.playedMoveList.size() - 1);
+		System.out.printf("%s %s\n", mp.source.getAlgebraic(), mp.dest.getAlgebraic());
+		String playedMove = mp.source.getAlgebraic() + " " + mp.dest.getAlgebraic();
+		  textArea.append(playedMove + '\n');
 	  }
 
 	public final JComponent getChessBoard() {
@@ -290,6 +294,7 @@ public class BoardGUI extends Thread implements MouseListener {
 						&& !board.doesMoveLeadToCheck(source, dest)) {
 					char specialMove = board.makeMove(source, dest);
 					movePiece(i, j, xCord, yCord, specialMove);
+					updateMoveList();
 					if(playingWithBot){
 						Main.bot.move(board);
 					}
